@@ -1,11 +1,11 @@
-import type { GetServerSideProps, GetServerSidePropsContext, InferGetServerSidePropsType } from 'next'
+import type { GetServerSideProps, GetServerSidePropsContext} from 'next'
 import React, { useEffect, useState } from 'react'
 import Head from 'next/head';
 import { api } from '~/utils/api'
 import MarkdownRenderer from '~/components/MarkdownRenderer';
 import { BookmarkSlashIcon,HandThumbUpIcon,ChatBubbleOvalLeftEllipsisIcon , BookmarkIcon,PlayCircleIcon,ShareIcon,EllipsisHorizontalIcon} from '@heroicons/react/24/outline';
 
-export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
+export const getServerSideProps = (context: GetServerSidePropsContext) => {
   const {id} = context.query
   
   return {
