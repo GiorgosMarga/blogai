@@ -37,6 +37,8 @@ const config = {
         },
       },
     ],
+    "@typescript-eslint/no-floating-promise/no-floating-promise": [2,
+    ]
   },
 };
 

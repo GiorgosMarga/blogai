@@ -1,8 +1,7 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import Head from "next/head";
-import { useState , useEffect} from "react";
+import { useState } from "react";
 import MarkdownEditor from "~/components/MarkdownEditor";
-import { api } from "~/utils/api";
 import MyModal from "~/components/MyModal";
 const NewPost: NextPage = () => {
     const [value,setValue] = useState('[//]: # "Start writing your own post in markdown!"')
