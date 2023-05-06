@@ -12,7 +12,7 @@ export const env = createEnv({
     JWT_KEY: z.string().min(10),
     REDIS_PASSWORD: z.string().min(1),
     REDIS_URL: z.string().min(1),
-    REDIS_PORT: z.number(),
+    REDIS_PORT: z.string(),
   },
 
   /**
