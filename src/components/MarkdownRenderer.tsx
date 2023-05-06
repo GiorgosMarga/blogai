@@ -4,7 +4,6 @@ import remarkGfm from 'remark-gfm'
 import {CodeBlock, tomorrowNightBlue} from 'react-code-blocks'
 const MarkdownRenderer = ({content, className}:{content:string;className:string}) => {
   return <ReactMarkdown
-  children={content}
     remarkPlugins={[remarkGfm]}
     className={`text-white text-md ${className} `}
     components={{
@@ -20,7 +19,7 @@ const MarkdownRenderer = ({content, className}:{content:string;className:string}
       code: ({node, ...props}) => <div className='mt-10 mb-5'><CodeBlock className="bg-blue-950/50 m-10" theme={tomorrowNightBlue} text={props.children} language="go" showLineNumbers={false}/></div>,
       blockquote: ({node,...props}) => <blockquote className="bg-blue-950/30 rounded-lg text-blue-500 p-2 text-sm font-semibold border-l-4 border-blue-500 my-5 w-fit">{props.children}</blockquote>
     }}
-  />
+  >{content}</ReactMarkdown>
 }
 
 export default MarkdownRenderer
