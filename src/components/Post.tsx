@@ -22,8 +22,8 @@ const Post = ({content,title,createdAt,creator,tag,id}:PostInput) => {
     const calculateReadTime = (contentLength: number) => {
         return Math.ceil(contentLength / 250)
     }
-    const onClickHandler = () => {
-        router.push(`/post/${id}`)
+    const onClickHandler = async () => {
+        await router.push(`/post/${id}`)
     }
   return (
     <div className='flex ' onClick={onClickHandler}>

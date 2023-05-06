@@ -4,8 +4,8 @@ import { useRouter } from 'next/router'
 const Header = () => {
     const router = useRouter()
 
-    const onClickHandler = () => {
-        router.push('/newPost')
+    const onClickHandler = async () => {
+        await router.push('/newPost')
     }
   return (
     <header className='w-full h-16  border-b border-red-50/60 flex items-center justify-between px-7'>

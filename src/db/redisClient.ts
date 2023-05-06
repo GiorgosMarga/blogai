@@ -14,7 +14,9 @@ const start = async () => {
     await redisClient.connect();
 }
 
-start()
+start().catch(err =>{
+    console.log(err)
+})
 
 
 
