@@ -2,7 +2,7 @@ import prisma from "../db/client"
 import {DBConnectionError, BadRequestError, NotFoundError} from "@giorgosmarga/errors"
 import { Password } from "./password";
 import { transporter } from "./email";
-import {User} from "@prisma/client"
+import type {User} from "@prisma/client"
 import crypto from "crypto"
 import { TRPCError } from "@trpc/server";
 interface CreateUserInput {
@@ -58,7 +58,7 @@ export class UserClass {
     }
     static async loginUser(loginUserInput: LoginUserInput): Promise<User> {
         
-        let user = await this.fetchUserByEmail(loginUserInput.email);
+        const user = await this.fetchUserByEmail(loginUserInput.email);
         if(!user){
             throw new BadRequestError('Bad credentials. Please try again');
         }

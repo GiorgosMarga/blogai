@@ -6,7 +6,7 @@ import MarkdownRenderer from '~/components/MarkdownRenderer';
 import { BookmarkSlashIcon,HandThumbUpIcon,ChatBubbleOvalLeftEllipsisIcon , BookmarkIcon,PlayCircleIcon,ShareIcon,EllipsisHorizontalIcon} from '@heroicons/react/24/outline';
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
-  const {id} = await context.query
+  const {id} = context.query
   
   return {
     props: {
@@ -15,7 +15,7 @@ export const getServerSideProps: GetServerSideProps = async (context: GetServerS
   }
   
 }
-const Post = ({id}:InferGetServerSidePropsType<typeof getServerSideProps>) => {
+const Post = ({id}:{id:string}) => {
 
     const post = api.post.getPost.useQuery({id},{staleTime: Infinity, refetchOnMount: 'always'})
     const bookmarkPost = api.user.bookmarkPost.useMutation()

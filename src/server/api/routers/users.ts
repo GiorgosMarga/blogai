@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { authenticatedProcedure, createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import prisma from "~/db/client";
-import {  User } from "@prisma/client";
+import type {  User } from "@prisma/client";
 import { DBConnectionError, UnauthorizedError, BadRequestError} from "@giorgosmarga/errors";
 import { UserClass } from "~/utils/User";
 import jsonwebtoken from 'jsonwebtoken'
@@ -13,7 +13,7 @@ export const usersRouter = createTRPCRouter({
   getUser: publicProcedure.input(z.object({
     id: z.string().uuid()
   })).query(async ({input}) => {
-    let user = await UserClass.fetchUserById(input.id)
+    const user = await UserClass.fetchUserById(input.id)
     return user;
   }),
   getUsers: publicProcedure.query(async() => {
@@ -31,10 +31,8 @@ export const usersRouter = createTRPCRouter({
     password: z.string().min(6),
     fullName: z.string().min(3)
   })).mutation(async ({input: {email, password, fullName}, ctx}, ) => {
-    let user: User;
     
-    
-    user = await UserClass.createUser({email,password,fullName})
+    const user = await UserClass.createUser({email,password,fullName})
     const jwt = jsonwebtoken.sign({email:user.email, id: user.id, role: user.role},env.JWT_KEY);
 
     ctx.res.setHeader('Set-Cookie', `user=${jwt}`)

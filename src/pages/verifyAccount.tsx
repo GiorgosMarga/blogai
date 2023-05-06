@@ -1,4 +1,4 @@
-import { NextPage } from "next";
+import type { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 import {PulseLoader} from "react-spinners"
@@ -10,11 +10,11 @@ const VerifyAccount: NextPage = () => {
     const router = useRouter();
     const verifyUser = api.user.verifyAccount.useMutation()
     useEffect(() => {
-        console.log(router.query)
         const {id,verificationId} = router.query as {id:string, verificationId:string}
         if(id && verificationId){
             verifyUser.mutate({id,verificationId})
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [router])
     return (<>
         <Head>

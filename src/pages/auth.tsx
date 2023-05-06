@@ -77,15 +77,18 @@ const Auth: NextPage = () => {
         }
     }
     useEffect(() => {
-        if(loginUser.isSuccess){
-            router.push('/')
+        const handleRedirect = async() => {
+            if(loginUser.isSuccess){
+                await router.push('/')
+            }
+            if(registerUser.isSuccess){
+                await router.push('/')
+    
+            }
         }
-        if(registerUser.isSuccess){
-            router.push('/')
-
-        }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
+        handleRedirect()
         
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [loginUser, registerUser])
     
     return (<>
