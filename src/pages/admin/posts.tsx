@@ -1,5 +1,4 @@
 import React from 'react'
-import { GetServerSideProps, GetServerSidePropsContext} from 'next'
 import { api } from '~/utils/api'
 import { Post, User } from '@prisma/client'
 
@@ -14,8 +13,8 @@ const Users = () => {
   return (
     <div className='flex flex-col space-y-5'>
         <p>Email   Id   Full Name Bookmarked Role</p>
-        {posts.data && posts.data.map(post => {
-            return <div className='flex space-x-5' onClick={() => onDeleteHandler(post)}>
+        {posts.data && posts.data.map((post,index) => {
+            return <div key={index} className='flex space-x-5' onClick={() => onDeleteHandler(post)}>
                 <p>{post.id}</p>
                 <p>{post.likes}</p>
                 <p>{post.title}</p>

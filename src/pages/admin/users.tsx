@@ -1,7 +1,5 @@
 import React from 'react'
-import { GetServerSideProps, GetServerSidePropsContext} from 'next'
 import { api } from '~/utils/api'
-import { User } from '@prisma/client'
 
 
 const Users = () => {
@@ -11,8 +9,8 @@ const Users = () => {
   return (
     <div className='flex flex-col space-y-5'>
         <p>Email   Id   Full Name Bookmarked Role</p>
-        {users.data && users.data.map(user => {
-            return <div className='flex space-x-5' onClick={() => setAdmin.mutate({userId: user.id})}>
+        {users.data && users.data.map((user,index) => {
+            return <div key={index} className='flex space-x-5' onClick={() => setAdmin.mutate({userId: user.id})}>
                 <p>{user.email}</p>
                 <p>{user.id}</p>
                 <p>{user.fullName}</p>
