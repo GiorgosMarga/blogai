@@ -6,7 +6,7 @@ import { api } from "~/utils/api";
 import MyModal from "~/components/MyModal";
 const NewPost: NextPage = () => {
     const [value,setValue] = useState('[//]: # "Start writing your own post in markdown!"')
-    const [showModal,setShowModal] = useState(false)
+    const [showModal,setShowModal] = useState<boolean>(false)
 
 
     const onClickHandler = () => {

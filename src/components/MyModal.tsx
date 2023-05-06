@@ -1,6 +1,5 @@
-// @ts-nocheck
 import { Category } from '@prisma/client';
-import { useState , useEffect} from 'react';
+import { useState , useEffect,  SetStateAction, Dispatch} from 'react';
 import Modal from 'react-modal';
 import { api } from '~/utils/api';
 import { BarLoader } from 'react-spinners';
@@ -16,7 +15,7 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
   }
 
 
-  const onKeyDownHandler = (e) => {
+  const onKeyDownHandler = (e: any) => {
     if(e.key === 'Enter'){
       setTags((prevState) => {
         return [...prevState, tag]
@@ -24,18 +23,18 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
       setTag('')
     }
   }
-  const onChangeHandler = (e) => {
+  const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTag(e.currentTarget.value)
   } 
 
-  const onChangeTitleHandler = (e) => {
+  const onChangeTitleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTitle(e.currentTarget.value)
   }
-  const onChangeSubtitleHandler = (e) => {
+  const onChangeSubtitleHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     setSubtitle(e.currentTarget.value)
   }
 
-  const onRemoveTagHandler = (index) => {
+  const onRemoveTagHandler = (index: number) => {
     setTags((prevState) => {
       return prevState.slice(0,index).concat(prevState.slice(index+1,prevState.length))
     })

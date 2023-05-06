@@ -24,6 +24,7 @@ const Post = ({content,title,createdAt,creator,tag,id}:PostInput) => {
     }
     const onClickHandler = async () => {
         await router.push(`/post/${id}`)
+        return;
     }
   return (
     <div className='flex ' onClick={onClickHandler}>
