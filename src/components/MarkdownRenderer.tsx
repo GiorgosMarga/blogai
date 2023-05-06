@@ -17,7 +17,7 @@ const MarkdownRenderer = ({content, className}:{content:string;className:string}
       h2: ({node, ...props}) => <h2 className="mt-5 mb-2 text-white text-xl font-bold">{props.children}</h2>,
       h3: ({node, ...props}) => <h3 className="mt-5 mb-2 text-white text-lg font-bold">{props.children}</h3>,
       h4: ({node, ...props}) => <h4 className="mt-5 mb-2 text-white font-bold text-lg">{props.children}</h4>,
-      code: ({node, ...props}) => <div className='mt-10 mb-5'><CodeBlock className="bg-blue-950/50 m-10" theme={tomorrowNightBlue} {...props} text={props.children} language="go" showLineNumbers={false}/></div>,
+      code: ({node, ...props}) => <div className='mt-10 mb-5'><CodeBlock className="bg-blue-950/50 m-10" theme={tomorrowNightBlue} text={props.children} language="go" showLineNumbers={false}/></div>,
       blockquote: ({node,...props}) => <blockquote className="bg-blue-950/30 rounded-lg text-blue-500 p-2 text-sm font-semibold border-l-4 border-blue-500 my-5 w-fit">{props.children}</blockquote>
     }}
   />
