@@ -1,6 +1,6 @@
 import React from 'react'
 import { api } from '~/utils/api'
-import { Post, User } from '@prisma/client'
+import type { Post } from '@prisma/client'
 
 
 const Users = () => {

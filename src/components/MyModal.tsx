@@ -1,5 +1,6 @@
 import { Category } from '@prisma/client';
-import { useState , useEffect,  SetStateAction, Dispatch} from 'react';
+import { useState , useEffect} from 'react';
+import type { Dispatch, SetStateAction } from 'react';
 import Modal from 'react-modal';
 import { api } from '~/utils/api';
 import { BarLoader } from 'react-spinners';
@@ -15,7 +16,7 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
   }
 
 
-  const onKeyDownHandler = (e: any) => {
+  const onKeyDownHandler = (e: React.KeyboardEvent<HTMLInputElement>) => {
     if(e.key === 'Enter'){
       setTags((prevState) => {
         return [...prevState, tag]

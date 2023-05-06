@@ -9,7 +9,7 @@ const MarkdownRenderer = ({content, className}:{content:string;className:string}
     components={{
       ol:({...props}) => <ol className=' list-decimal ml-4 my-5 font-semibold  space-y-3'>{props.children}</ol>,
       ul:({...props}) => <ul className=' list-disc ml-5 space-y-2 font-semibold  my-5'>{props.children}</ul>,
-      hr: ({...props}) => <hr className='my-5'/>,
+      hr: () => <hr className='my-5'/>,
       p: ({...props}) => <p className='break-words leading-relaxed'>{props.children}</p>,
       strong: ({...props}) => <strong className='text-blue-500 text-lg font-bold'>{props.children}</strong>,
       h1: ({ ...props}) => <h1 className="mt-5  mb-2 text-white text-2xl font-bold">{props.children}</h1>,
