@@ -58,6 +58,7 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
     if(createPost.isSuccess){
       setShowModal(false)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[createPost])
   
 

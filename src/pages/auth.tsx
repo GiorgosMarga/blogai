@@ -4,7 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
 import {PulseLoader} from "react-spinners"
 import { api } from "~/utils/api";
-
+import type { TRPCError } from "@trpc/server";
 enum FormState {
     LOGIN= 'login',
     REGISTER= 'register'
@@ -37,8 +37,11 @@ const Auth: NextPage = () => {
 
     const formatError = (error: string | undefined) => {
         if(error && error.startsWith("[")){
-            const jsonError = JSON.parse(error)[0]
-            return jsonError?.message
+            const json = JSON.parse(error) as TRPCError[]
+            if(json){
+                const jsonError = json.at(0)
+                return jsonError?.message
+            }
         }
         return error;
     }
@@ -81,6 +84,8 @@ const Auth: NextPage = () => {
             router.push('/')
 
         }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+        
     }, [loginUser, registerUser])
     
     return (<>

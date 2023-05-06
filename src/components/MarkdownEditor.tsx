@@ -37,6 +37,7 @@ const MarkdownEditor = ({value,setValue}:{value:string; setValue:React.Dispatch<
     if(textAreaRef && textAreaRef.current){
       textAreaRef.current.selectionStart = cursorPosition
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[textAreaRef])
 
 
@@ -156,6 +157,7 @@ const MarkdownEditor = ({value,setValue}:{value:string; setValue:React.Dispatch<
     }else{
       textAreaRef.current?.focus()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isULEnabled])
 
   
@@ -169,6 +171,7 @@ const MarkdownEditor = ({value,setValue}:{value:string; setValue:React.Dispatch<
       textAreaRef.current?.focus()
       setOlNumber(2)
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   },[isOLEnabled])
 
   return (

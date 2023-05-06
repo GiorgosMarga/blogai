@@ -6,7 +6,7 @@ import MarkdownRenderer from '~/components/MarkdownRenderer';
 import { BookmarkSlashIcon,HandThumbUpIcon,ChatBubbleOvalLeftEllipsisIcon , BookmarkIcon,PlayCircleIcon,ShareIcon,EllipsisHorizontalIcon} from '@heroicons/react/24/outline';
 
 export const getServerSideProps: GetServerSideProps = async (context: GetServerSidePropsContext) => {
-  let {id} = await context.query
+  const {id} = await context.query
   
   return {
     props: {
