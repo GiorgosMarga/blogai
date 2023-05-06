@@ -1,10 +1,11 @@
 import { createClient } from 'redis';
+import { env } from '~/env.mjs';
 
 const redisClient = createClient({
-    password: 'McXxBla6EknQ7k0s3dYZNMhdjk3DaoIS',
+    password: env.REDIS_PASSWORD,
     socket: {
-        host: 'redis-11982.c300.eu-central-1-1.ec2.cloud.redislabs.com',
-        port: 11982
+        host: env.REDIS_URL,
+        port: env.REDIS_PORT
     }
 });
 

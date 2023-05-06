@@ -10,6 +10,9 @@ export const env = createEnv({
     NODE_ENV: z.enum(["development", "test", "production"]),
     DATABASE_URL: z.string().min(1),
     JWT_KEY: z.string().min(10),
+    REDIS_PASSWORD: z.string().min(1),
+    REDIS_URL: z.string().min(1),
+    REDIS_PORT: z.number(),
   },
 
   /**
@@ -29,6 +32,9 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
     DATABASE_URL: process.env.DATABASE_URL,
     JWT_KEY: process.env.JWT_KEY,
+    REDIS_PASSWORD: process.env.REDIS_PASSWORD,
+    REDIS_URL: process.env.REDIS_URL,
+    REDIS_PORT: process.env.REDIS_PORT,
     // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
   },
 });
