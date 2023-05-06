@@ -7,7 +7,7 @@ import { UserClass } from "~/utils/User";
 import jsonwebtoken from 'jsonwebtoken'
 import { env } from "~/env.mjs";
 import { JWT } from "~/utils/JWT";
-
+import redisClient from "~/db/redisClient";
 
 export const usersRouter = createTRPCRouter({
   getUser: publicProcedure.input(z.object({
@@ -151,6 +151,7 @@ export const usersRouter = createTRPCRouter({
           likes: isPostLiked ?  {decrement: 1}: {increment: 1}
         }
       })
+      await redisClient.del(input.postId)
       return updatedUser.likedPosts;
     } catch (error) {
       throw new DBConnectionError("DB_ERROR while updating bookmarked.")

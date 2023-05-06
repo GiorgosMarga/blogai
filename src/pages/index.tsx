@@ -30,7 +30,7 @@ const Home: NextPage = () => {
               })}
             </div>
           </div>
-          <div className="flex-grow  w-[40%] p-10 hidden md:flex flex-col">
+          <div className="flex-grow  w-[90%] p-10 hidden md:flex flex-col">
             <h2 className="text-white text-lg font-semibold">Monthly Best Articles</h2>
             <div className="flex flex-col">
               <PickedArticle/>

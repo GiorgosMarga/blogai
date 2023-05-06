@@ -1,9 +1,10 @@
 import { z } from "zod";
 import { authenticatedProcedure, createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import prisma from "~/db/client";
-import { Post , Category, Role} from "@prisma/client";
+import { Post , Category, Role, User} from "@prisma/client";
 import {BadRequestError, DBConnectionError} from "@giorgosmarga/errors"
 import { PostClass } from "~/utils/Post";
+import redisClient from "~/db/redisClient";
 export const postsRouter = createTRPCRouter({
     getPosts: publicProcedure.query(async () => {
         
@@ -21,7 +22,14 @@ export const postsRouter = createTRPCRouter({
     getPost: publicProcedure.input(z.object({
         id: z.string().uuid()
     })).query(async ({input: {id}}) => {
+        const cachedPost = await redisClient.get(id)
+        if(cachedPost){
+            return JSON.parse(cachedPost) as Post &  {
+                user: User
+            };
+        }
         const post = await PostClass.getPostById(id)
+        await redisClient.set(post.id, JSON.stringify(post))
         return post;
     }),
     createPost: authenticatedProcedure.input(z.object({
@@ -50,6 +58,7 @@ export const postsRouter = createTRPCRouter({
         postId: z.string().uuid()
     })).mutation(async ({input:{title,content,subtitle,postId},ctx}) =>  {
         const post = await PostClass.getPostById(postId);
+        await redisClient.del(postId)
         if(ctx.user.id === post.user.id){
             const updatedPost = await PostClass.updatePost(postId,{title,content,subtitle})
             return updatedPost

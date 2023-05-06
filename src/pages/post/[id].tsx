@@ -36,6 +36,7 @@ const Post = ({id}:InferGetServerSidePropsType<typeof getServerSideProps>) => {
     // initialize if post has been already liked before by the user (from db)
     useEffect(() => {
       if(isPostLiked.data){
+        console.log(isPostLiked.data)
         setIsLiked(isPostLiked.data.isLiked)
       }
 
@@ -86,15 +87,15 @@ const Post = ({id}:InferGetServerSidePropsType<typeof getServerSideProps>) => {
                                 <div className='flex text-sm font-light space-x-2 items-center'>
                                   <p>{`${Math.ceil(post.data.content.split(' ').length / 250)} min read`}</p>
                                   <p className='text-lg'>·</p>
-                                  <p>{`${new Date(post.data.createdAt).getDate()} ${new Intl.DateTimeFormat('en-US', {month: 'long'}).format(post.data.createdAt)} ${new Date(post.data.createdAt).getFullYear()}`}</p>
+                                  <p>{`${new Date(post.data.createdAt).getDate()} ${new Intl.DateTimeFormat('en-US', {month: 'long'}).format(new Date(post.data.createdAt))} ${new Date(post.data.createdAt).getFullYear()}`}</p>
                                 </div>
                               </div>
                             </div>
-                            {(isPostLiked.isFetched || isPostLiked.error) && <div className='flex w-[80%] justify-between border-b border-gray-50/20 pb-4 '>
+                            <div className='flex w-[80%] justify-between border-b border-gray-50/20 pb-4 '>
                                 <div className='flex space-x-5 text-gray-300 '>
                                   <div className='flex space-x-2 items-center'>
                                       <HandThumbUpIcon className={`w-5 h-5 hover:scale-105 transition-all ease-linear cursor-pointer ${isLiked ? "text-red-400" : 'text-gray-300'}`} onClick={likePostHandler}/>
-                                      <p>{likes}</p>
+                                      <p>{(isPostLiked.isFetched || isPostLiked.error) && likes}</p>
                                   </div>
                                   <div className='flex space-x-2 items-center'>
                                       <ChatBubbleOvalLeftEllipsisIcon className='w-5 h-5 text-gray-300'/>
@@ -107,7 +108,7 @@ const Post = ({id}:InferGetServerSidePropsType<typeof getServerSideProps>) => {
                                     <ShareIcon className='w-5 h-5'/>
                                     <EllipsisHorizontalIcon className='w-5 h-5'/>
                                 </div>
-                            </div>}
+                            </div>
                             <MarkdownRenderer content={post.data.content} className='mt-10 w-[80%]'/>
                             <div className='flex w-[80%] space-x-4 py-3 mt-5 border-t border-gray-500/30 '>
                               {post.data.tags.map((tag,index) => {
