@@ -34,6 +34,7 @@
     "react-markdown": "^8.0.7",
     "react-modal": "^3.16.1",
     "react-spinners": "^0.13.8",
+    "recoil": "^0.7.7",
     "remark-gfm": "^3.0.1",
     "remarkable": "^2.0.1",
     "superjson": "1.12.2",

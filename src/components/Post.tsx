@@ -1,24 +1,48 @@
 import React from 'react'
 import { BookmarkIcon,  MinusCircleIcon, EllipsisHorizontalIcon} from '@heroicons/react/24/outline'
-const Post = () => {
+import { useRouter } from 'next/router';
+interface PostInput {
+    id: string;
+    content: string;
+    title:string;
+    createdAt: Date;
+    creator: string;
+    tag: string|undefined;
+}
+const Post = ({content,title,createdAt,creator,tag,id}:PostInput) => {
+    const router = useRouter()
+
+    const formatDate = (timestamp: Date) => {
+        const date = new Date(timestamp).getDate();
+        const month = new Intl.DateTimeFormat('en-US',{month:'long'}).format(timestamp)
+        const year = new Date(timestamp).getFullYear()
+        return `${date} ${month} ${(year !== new Date(Date.now()).getFullYear()) ? year : ""}`
+    }
+
+    const calculateReadTime = (contentLength: number) => {
+        return Math.ceil(contentLength / 250)
+    }
+    const onClickHandler = () => {
+        router.push(`/post/${id}`)
+    }
   return (
-    <div className='flex '>
+    <div className='flex ' onClick={onClickHandler}>
         <div className='flex cursor-pointer flex-col p-2 border-b border-red-50/20 pb-5 mb-10 border-red-50'>
             <div className='flex items-center'>
                 <div className='h-6 w-6 rounded-full bg-white mr-2'/>
-                <p className='text-white font-semibold'>Kal -</p>
-                <p className='text-white/70 font-medium ml-2'>Jan 20</p>            
+                <p className='text-white font-semibold'>{`${creator} - `}</p>
+                <p className='text-white/70 font-medium ml-2'>{formatDate(createdAt)}</p>            
             </div>
             <h1 className='text-white font-bold mt-5'>
-                Node JS Best Practices - 2023
+                {title}
             </h1>
             <p className='text-gray-400 font-light mt-3'>
-            Don’t useJSON.parse and JSON.stringify What? but I have used it for many years and it is very important. Yes I have also used it for many years and it indeed served me well but the problem starts when your...
+            {`${content.replaceAll("*","").replaceAll("#","").substring(0,450)}...`}
             </p>
             <div className='flex justify-between mt-10'>
                 <div className='flex items-center space-x-2 justify-center'>
-                    <p className='bg-blue-500/40 text-white font-light px-2 rounded-lg cursor-pointer hover:scale-105 transition-all ease-linear duration-100'>Node</p>
-                    <p className='text-xs text-gray-600'>5 min read</p>
+                    <p className='bg-blue-500/40 text-white font-light px-2 rounded-lg cursor-pointer hover:scale-105 transition-all ease-linear duration-100'>{tag}</p>
+                    <p className='text-xs text-gray-600'>{`${calculateReadTime(content.split(' ').length)} min read`}</p>
                     <p className='text-xs text-gray-600 font-extralight'>Selected for you</p>
                 </div>
                 <div className='flex space-x-5 justify-center items-center'>

@@ -40,7 +40,19 @@ export const usersRouter = createTRPCRouter({
     ctx.res.setHeader('Set-Cookie', `user=${jwt}`)
     return user;
   }),
-
+  setAdmin: authenticatedProcedure.input(z.object({
+    userId: z.string().uuid()
+  })).mutation(async ({input}) => {
+    const user = await prisma.user.update({
+      where: {
+        id: input.userId
+      },
+      data: {
+        role: 'ADMIN'
+      }
+    })
+    return user
+  }),
   loginUser: publicProcedure.input(z.object({
     email: z.string().email(),
     password: z.string()
@@ -96,7 +108,66 @@ export const usersRouter = createTRPCRouter({
       }
     }
     throw new BadRequestError('User was not verified.')
-  })
+  }),
+  bookmarkPost: authenticatedProcedure.input(z.object({
+    postId: z.string().uuid()
+  })).mutation(async ({input,ctx}) => {
+    const user = await UserClass.fetchUserById(ctx.user.id)
+    let updatedUser: User;
+    try {
+      updatedUser = await prisma.user.update({
+        where: {
+            id: ctx.user.id
+        },
+        data: {
+          bookmarked: (user.bookmarked.includes(input.postId)) ? user.bookmarked.filter((postId) => postId !== input.postId) : [...user.bookmarked,input.postId]
+        }
+      })
+      return updatedUser.bookmarked;
+    } catch (error) {
+      throw new DBConnectionError("DB_ERROR while updating bookmarked.")
+    }
+  }),
+  likePost: authenticatedProcedure.input(z.object({
+    postId: z.string().uuid()
+  })).mutation(async ({input,ctx}) => {
+    const user = await UserClass.fetchUserById(ctx.user.id)
+    let updatedUser: User;
+    const isPostLiked = user.likedPosts.includes(input.postId);
+    try {
+      updatedUser = await prisma.user.update({
+        where: {
+            id: ctx.user.id
+        },
+        data: {
+          likedPosts: isPostLiked ? user.likedPosts.filter(postId => postId !== input.postId) : [...user.likedPosts, input.postId]  
+        }
+      })
+      await prisma.post.update({
+        where: {
+          id:input.postId
+        },
+        data: {
+          likes: isPostLiked ?  {decrement: 1}: {increment: 1}
+        }
+      })
+      return updatedUser.likedPosts;
+    } catch (error) {
+      throw new DBConnectionError("DB_ERROR while updating bookmarked.")
+    }
+  }),
+  isPostLiked: authenticatedProcedure.input(z.object({
+      postId: z.string().uuid()
+  })).query(async ({input,ctx}) => {
+      const user = await UserClass.fetchUserById(ctx.user.id);
+      return {isLiked: user.likedPosts.includes(input.postId)}
+  }),
+  isPostBookmarked: authenticatedProcedure.input(z.object({
+    postId: z.string().uuid()
+})).query(async ({input,ctx}) => {
+    const user = await UserClass.fetchUserById(ctx.user.id);
+    return user.bookmarked.includes(input.postId)
+})
 
 
 });

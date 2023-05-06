@@ -9,6 +9,7 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
   const [tags, setTags] = useState<string[]>([])
   const [tag,setTag] = useState('')
   const [title,setTitle] = useState('')
+  const [subtitle,setSubtitle] = useState('')
 
   const toggleModal = () => {
     setShowModal(prevState => !prevState);
@@ -30,6 +31,9 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
   const onChangeTitleHandler = (e) => {
     setTitle(e.currentTarget.value)
   }
+  const onChangeSubtitleHandler = (e) => {
+    setSubtitle(e.currentTarget.value)
+  }
 
   const onRemoveTagHandler = (index) => {
     setTags((prevState) => {
@@ -44,7 +48,8 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
         title,
         content,
         category: Category.WEB_DEV,
-        tags
+        tags,
+        subtitle
       })
     }
   }
@@ -65,8 +70,9 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
         className="bg-blue-950 h-[70%] w-[70%] rounded-xl shadow-xl p-10" 
         overlayClassName="bg-gray-500/50 absolute top-0 w-screen h-screen flex justify-center items-center"
         >
-        <div className='flex space-x-3 items-center '>
-            <input className='bg-blue-950 border border-red-50 p-1 pl-2 w-[40%] rounded-xl text-white text-lg font-bold outline-none' placeholder='Add your title here' onChange={onChangeTitleHandler} value={title}/>
+        <div className='flex space-y-3 flex-col justify-start items-start'>
+            <input className='bg-blue-950 border border-red-50 p-1 pl-2 w-[70%] rounded-xl text-white text-lg font-bold outline-none' placeholder='Add title ' onChange={onChangeTitleHandler} value={title}/>
+            <input className='bg-blue-950 border border-red-50 p-1 pl-2 w-[70%] rounded-xl text-white text-lg font-bold outline-none' placeholder='Add subtitle (optional)' onChange={onChangeSubtitleHandler} value={subtitle}/>
         </div> 
         <div className='items-center '>
             <p className='text-white font-semibold mt-3'>{"Add tags (max 5)"}</p>
@@ -78,7 +84,7 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
                     </div>
                   })
                 }
-                {tags.length < 5 && <input className='bg-blue-950 p-1 pl-2 rounded-xl text-white text-lg font-bold outline-none' placeholder='Add tag' value={tag} onChange={onChangeHandler} onKeyDown={onKeyDownHandler}/>}
+                {tags.length < 5 && <input className='bg-blue-950 p-1 pl-2 rounded-xl text-white text-lg font-bold outline-none' placeholder='Add tag (optional)' value={tag} onChange={onChangeHandler} onKeyDown={onKeyDownHandler}/>}
             </div>
         </div>
         <div className='flex items-center space-x-5'>

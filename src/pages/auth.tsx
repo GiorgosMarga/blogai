@@ -6,8 +6,6 @@ import { useEffect, useState } from "react";
 import {PulseLoader} from "react-spinners"
 import { api } from "~/utils/api";
 
-
-
 enum FormState {
     LOGIN= 'login',
     REGISTER= 'register'
@@ -20,7 +18,6 @@ const Auth: NextPage = () => {
     const [confirmPassword,setConfirmPassword] = useState<string>('')
     const [fullName,setFullName] = useState<string>('')
     const router = useRouter()
-
     //trpc
     const loginUser = api.user.loginUser.useMutation();
     const registerUser = api.user.registerUser.useMutation();

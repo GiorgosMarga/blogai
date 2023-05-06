@@ -5,9 +5,9 @@ import Post from "~/components/Post";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import { api } from "~/utils/api";
 import PickedArticle from "~/components/PickedArticle";
-
 const Home: NextPage = () => {
-  const users = api.user.getUsers.useQuery()
+  const posts = api.post.getPosts.useQuery()
+
   return (
     <>
       <Head>
@@ -25,9 +25,9 @@ const Home: NextPage = () => {
               <p>Following</p>
             </div>
             <div className="flex flex-col">
-              <Post/>
-              <Post/>
-              <Post/>
+              {posts.data && posts.data.map((post) => {
+                return <Post id={post.id} key={post.id} content={post.content} title={post.title} createdAt={post.updatedAt} creator={post.user.fullName} tag={post.tags[0]}/>
+              })}
             </div>
           </div>
           <div className="flex-grow  w-[40%] p-10 hidden md:flex flex-col">
