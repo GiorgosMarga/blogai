@@ -1,7 +1,9 @@
-import { createClient } from 'redis';
+import { RedisClientType, createClient } from 'redis';
 import { env } from '~/env.mjs';
 
-const redisClient = createClient({
+const globalForRedis = global as unknown as {redis: RedisClientType}
+
+const redisClient = globalForRedis.redis || createClient({
     password: env.REDIS_PASSWORD,
     socket: {
         host: env.REDIS_URL,
@@ -9,16 +11,23 @@ const redisClient = createClient({
     }
 });
 
-redisClient.on('error', err => console.log('Redis Client Error', err));
+
+export default redisClient
 
 const start = async () => {
     await redisClient.connect();
 }
 
-start().catch(err =>{
-    console.log(err)
-})
+
+if(!globalForRedis.redis){
+    start().then(() => {
+        console.log('New instance was created (REDIS)')
+    }).catch(err =>{
+        console.log(err)
+    })
+}
+
+if (env.NODE_ENV !== 'production') globalForRedis.redis = redisClient
 
 
 
-export default redisClient
