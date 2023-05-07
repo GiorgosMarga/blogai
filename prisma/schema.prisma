@@ -25,6 +25,9 @@ model User {
   comments                Comment[]
   bookmarked              String[]
   likedPosts              String[]
+
+  @@index([email])
+  @@index([id])
 }
 
 model Post {
@@ -43,6 +46,8 @@ model Post {
   isVisible  Boolean   @default(false)
   isFeatured Boolean   @default(false)
   comments   Comment[]
+
+  @@index([id])
 }
 
 model Comment {

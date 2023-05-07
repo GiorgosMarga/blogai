@@ -1,6 +1,6 @@
 import React from 'react'
 import { BookmarkIcon,  MinusCircleIcon, EllipsisHorizontalIcon} from '@heroicons/react/24/outline'
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 interface PostInput {
     id: string;
     content: string;
@@ -10,7 +10,7 @@ interface PostInput {
     tag: string|undefined;
 }
 const Post = ({content,title,createdAt,creator,tag,id}:PostInput) => {
-    const router = useRouter()
+    // const router = useRouter()
 
     const formatDate = (timestamp: Date) => {
         const date = new Date(timestamp).getDate();
@@ -22,12 +22,8 @@ const Post = ({content,title,createdAt,creator,tag,id}:PostInput) => {
     const calculateReadTime = (contentLength: number) => {
         return Math.ceil(contentLength / 250)
     }
-    const onClickHandler = async () => {
-        await router.push(`/post/${id}`)
-        return;
-    }
   return (
-    <div className='flex ' onClick={onClickHandler}>
+    <Link className='flex'  href={`/post/${id}`}>
         <div className='flex cursor-pointer flex-col p-2 border-b border-red-50/20 pb-5 mb-10 border-red-50'>
             <div className='flex items-center'>
                 <div className='h-6 w-6 rounded-full bg-white mr-2'/>
@@ -56,7 +52,7 @@ const Post = ({content,title,createdAt,creator,tag,id}:PostInput) => {
         <div className='w-[15%] flex ml-5 justify-center items-center'>
             <div className='w-[100px] h-[100px] bg-blue-500/40 cursor-pointer rounded-md'/>
         </div>
-    </div>
+    </Link>
     
   )
 }
