@@ -23,7 +23,7 @@ const Post = ({content,title,createdAt,creator,tag,id}:PostInput) => {
         return Math.ceil(contentLength / 250)
     }
   return (
-    <Link className='flex'  href={`/post/${id}`}>
+    <Link className='flex'  href={`/post/${id}`}  shallow prefetch={false}>
         <div className='flex cursor-pointer flex-col p-2 border-b border-red-50/20 pb-5 mb-10 border-red-50'>
             <div className='flex items-center'>
                 <div className='h-6 w-6 rounded-full bg-white mr-2'/>
