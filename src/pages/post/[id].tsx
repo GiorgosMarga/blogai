@@ -3,8 +3,9 @@ import React, { useEffect, useState } from 'react'
 import Head from 'next/head';
 import { api } from '~/utils/api'
 import MarkdownRenderer from '~/components/MarkdownRenderer';
-import { BookmarkSlashIcon,HandThumbUpIcon,ChatBubbleOvalLeftEllipsisIcon , BookmarkIcon,PlayCircleIcon,ShareIcon,EllipsisHorizontalIcon} from '@heroicons/react/24/outline';
-
+import { PencilIcon,BookmarkSlashIcon,HandThumbUpIcon,ChatBubbleOvalLeftEllipsisIcon , BookmarkIcon,PlayCircleIcon,ShareIcon,EllipsisHorizontalIcon} from '@heroicons/react/24/outline';
+import { useRecoilValue } from 'recoil';
+import { userAtom } from '~/atoms/userAtom';
 export const getServerSideProps = (context: GetServerSidePropsContext) => {
   const {id} = context.query
   
@@ -16,7 +17,7 @@ export const getServerSideProps = (context: GetServerSidePropsContext) => {
   
 }
 const Post = ({id}:{id:string}) => {
-
+    const userId = useRecoilValue(userAtom)
     const post = api.post.getPost.useQuery({id},{staleTime: Infinity, refetchOnMount: 'always'})
     const bookmarkPost = api.user.bookmarkPost.useMutation()
     const likePost = api.user.likePost.useMutation()
@@ -25,14 +26,20 @@ const Post = ({id}:{id:string}) => {
     const [likes,setLikes] = useState(0)
     const [isLiked,setIsLiked] = useState(false)
     const [isBookmarked,setIsBookmarked] = useState(false)
+    const [editable, setEditable] = useState(false)
     
     // initialize likes from db
     useEffect(()=> {
       if(post.data){
         setLikes(post.data.likes)
       }
-      console.log(post)
     }, [post.data])
+
+    useEffect(() => {
+      if(userId && post.data && userId === post.data.user.id){
+        setEditable(true)
+      }
+    },[userId,post.data])
 
     // initialize if post has been already liked before by the user (from db)
     useEffect(() => {
@@ -104,6 +111,7 @@ const Post = ({id}:{id:string}) => {
                                   </div>
                                 </div>
                                 <div className='flex items-center space-x-3 text-gray-400'>
+                                    {editable && <PencilIcon className='w-5 h-5'/>}
                                     {isBookmarked ? <BookmarkSlashIcon className={`w-5 h-5 hover:text-white cursor-pointer`} onClick={bookmarkPostHandler}/> :<BookmarkIcon className={`w-5 h-5 hover:text-white cursor-pointer`} onClick={bookmarkPostHandler}/>}
                                     <PlayCircleIcon className='w-5 h-5'/>
                                     <ShareIcon className='w-5 h-5'/>
