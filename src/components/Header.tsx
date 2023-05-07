@@ -5,7 +5,12 @@ const Header = () => {
     const router = useRouter()
 
     const onClickHandler = async () => {
-        await router.push('/newPost')
+
+        if(document.cookie){
+            console.log("cookie:",document)
+            return await router.push('/newPost')
+        }
+        await router.push('/auth')
     }
   return (
     <header className='w-full h-16  border-b border-red-50/60 flex items-center justify-between px-7'>

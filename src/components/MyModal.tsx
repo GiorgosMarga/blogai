@@ -4,13 +4,14 @@ import type { Dispatch, SetStateAction } from 'react';
 import Modal from 'react-modal';
 import { api } from '~/utils/api';
 import { BarLoader } from 'react-spinners';
+import {useRouter} from "next/navigation"
 function MyModal({showModal, setShowModal, content}: {showModal: boolean; setShowModal: Dispatch<SetStateAction<boolean>>;content: string}) {
   const createPost = api.post.createPost.useMutation()
   const [tags, setTags] = useState<string[]>([])
   const [tag,setTag] = useState('')
   const [title,setTitle] = useState('')
   const [subtitle,setSubtitle] = useState('')
-
+  const router = useRouter()
   const toggleModal = () => {
     setShowModal(prevState => !prevState);
   }
@@ -57,6 +58,7 @@ function MyModal({showModal, setShowModal, content}: {showModal: boolean; setSho
   useEffect(() => {
     if(createPost.isSuccess){
       setShowModal(false)
+      router.push(`/post/${createPost.data.id}`)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   },[createPost])

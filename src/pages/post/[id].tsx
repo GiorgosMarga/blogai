@@ -31,6 +31,7 @@ const Post = ({id}:{id:string}) => {
       if(post.data){
         setLikes(post.data.likes)
       }
+      console.log(post)
     }, [post.data])
 
     // initialize if post has been already liked before by the user (from db)

@@ -58,8 +58,7 @@ export const usersRouter = createTRPCRouter({
 
     const user = await UserClass.loginUser({email,password}) 
     const jwt = JWT.createJWT({email: user.email,id:user.id, role: user.role})
-    
-    ctx.res.setHeader('Set-Cookie', `user=${jwt}`)
+    ctx.res.setHeader('Set-Cookie', `user=${jwt}; path=/;`)
     return user;
   }),
   deleteUser: authenticatedProcedure.input(z.object({
