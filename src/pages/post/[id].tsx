@@ -114,6 +114,18 @@ const Post = ({ id }: { id: string }) => {
     }
   };
 
+  useEffect(() => {
+    if (updatePost.error) {
+      console.log("updatePost:", updatePost.error);
+    }
+  }, [updatePost.error]);
+
+  useEffect(() => {
+    if (post.error) {
+      console.log("error:", post.error);
+    }
+  }, [post.error]);
+
   const onEditHandler = () => {
     setEdit(true);
     if (post.data) {

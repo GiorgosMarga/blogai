@@ -32,7 +32,7 @@ export const postsRouter = createTRPCRouter({
         }
         const post = await PostClass.getPostById(id)
         await redisClient.set(post.id, JSON.stringify(post))
-        await redisClient.disconnect()
+        // await redisClient.disconnect()
         return post;
     }),
     createPost: authenticatedProcedure.input(z.object({
