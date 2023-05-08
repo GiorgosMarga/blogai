@@ -1,37 +1,71 @@
-import React from 'react'
-import {MagnifyingGlassIcon, PencilSquareIcon, BellIcon} from '@heroicons/react/24/outline'
-import { useRouter } from 'next/router'
+import React, { useEffect, useState } from "react";
+import {
+  MagnifyingGlassIcon,
+  PencilSquareIcon,
+  BellIcon,
+} from "@heroicons/react/24/outline";
+import { BiLogOut, BiLogIn } from "react-icons/bi";
+import { useRouter } from "next/router";
+import { api } from "~/utils/api";
 const Header = () => {
-    const router = useRouter()
-
-    const onClickHandler = async () => {
-
-        if(document.cookie){
-            console.log("cookie:",document)
-            return await router.push('/newPost')
-        }
-        await router.push('/auth')
+  const router = useRouter();
+  const logoutUser = api.user.logoutUser.useMutation();
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const onClickHandler = async () => {
+    if (document.cookie) {
+      console.log("cookie:", document);
+      return await router.push("/newPost");
     }
+    await router.push("/auth");
+  };
+  useEffect(() => {
+    if (document.cookie) {
+      if (document.cookie.split("=")[0] === "user") {
+        setIsLoggedIn(true);
+      }
+    }
+  }, []);
+
+  const onLogoutHandler = () => {
+    logoutUser.mutate();
+    setIsLoggedIn(false);
+  };
   return (
-    <header className='w-full h-16  border-b border-red-50/60 flex items-center justify-between px-7'>
-        <div className='flex space-x-5'>
-            <h1 className='text-xl font-extrabold text-red-50'>BlogAI</h1>
-            <div className='flex rounded-xl w-64 px-2 py-1 space-x-2 bg-[#161f32]'>
-                <MagnifyingGlassIcon className='text-red-50 w-5 h-5 mt-[2px]'/>
-                <input className='bg-[#161f32] text-red-50 outline-none' placeholder='Search BlogAI'/>
-            </div>
+    <header className="flex h-16  w-full items-center justify-between border-b border-red-50/60 px-7">
+      <div className="flex space-x-5">
+        <h1 className="text-xl font-extrabold text-red-50">BlogAI</h1>
+        <div className="flex w-64 space-x-2 rounded-xl bg-[#161f32] px-2 py-1">
+          <MagnifyingGlassIcon className="mt-[2px] h-5 w-5 text-red-50" />
+          <input
+            className="bg-[#161f32] text-red-50 outline-none"
+            placeholder="Search BlogAI"
+          />
         </div>
-        <div className='flex space-x-8 justify-center items-center'>
-            <div className='flex space-x-1 cursor-pointer' onClick={onClickHandler}>
-                <PencilSquareIcon className='text-red-50 w-6 h-6'/>
-                <p className='text-red-50'>Write</p>
-            </div>
-            <BellIcon className='text-red-50 w-6 h-6'/>
-            <div className='w-7 h-7 bg-blue-500 rounded-full' />
-
+      </div>
+      <div className="flex items-center justify-center space-x-7">
+        <div className="flex cursor-pointer space-x-1" onClick={onClickHandler}>
+          <PencilSquareIcon className="h-6 w-6 text-red-50" />
+          <p className="text-red-50">Write</p>
         </div>
+        <BellIcon className="h-6 w-6 text-red-50" />
+        {!isLoggedIn && (
+          <BiLogIn
+            className="h-6 w-6 cursor-pointer text-red-50 hover:text-white"
+            onClick={() => router.push("/auth")}
+          />
+        )}
+        {isLoggedIn && (
+          <>
+            <div className="h-7 w-7 rounded-full bg-blue-500" />
+            <BiLogOut
+              className="h-6 w-6 cursor-pointer text-red-50 hover:text-white"
+              onClick={onLogoutHandler}
+            />
+          </>
+        )}
+      </div>
     </header>
-  )
-}
+  );
+};
 
-export default Header
+export default Header;

@@ -17,7 +17,11 @@ Router.events.on("routeChangeStart", progress.start);
 Router.events.on("routeChangeComplete", progress.finish);
 Router.events.on("routeChangeError", progress.finish);
 const MyApp: AppType = ({ Component, pageProps }) => {
-  return <RecoilRoot><Component {...pageProps} /></RecoilRoot>;
+  return (
+    <RecoilRoot>
+      <Component {...pageProps} />
+    </RecoilRoot>
+  );
 };
 
 export default api.withTRPC(MyApp);

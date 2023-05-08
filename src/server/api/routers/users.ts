@@ -8,6 +8,7 @@ import jsonwebtoken from 'jsonwebtoken'
 import { env } from "~/env.mjs";
 import { JWT } from "~/utils/JWT";
 import redisClient from "~/db/redisClient";
+import { TRPCError } from "@trpc/server";
 
 export const usersRouter = createTRPCRouter({
   getUser: publicProcedure.input(z.object({
@@ -25,7 +26,10 @@ export const usersRouter = createTRPCRouter({
     }
     return users
   }),
-
+  logoutUser: authenticatedProcedure.mutation(({ctx}) => {
+    ctx.res.setHeader("Set-Cookie", `user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;`)
+    return;
+  }),
   registerUser: publicProcedure.input(z.object({
     email: z.string().email(),
     password: z.string().min(6),
@@ -162,10 +166,28 @@ export const usersRouter = createTRPCRouter({
   }),
   isPostBookmarked: authenticatedProcedure.input(z.object({
     postId: z.string().uuid()
-})).query(async ({input,ctx}) => {
+  })).query(async ({input,ctx}) => {
     const user = await UserClass.fetchUserById(ctx.user.id);
     return user.bookmarked.includes(input.postId)
+  }),
+  whoIs: authenticatedProcedure.input(z.any()).query(async ({ctx}) =>{
+    let user: {id: string} | null
+    try {
+      user = await prisma.user.findFirst({
+        where: {
+          id: ctx.user.id
+        },
+        select: {
+          id: true
+        }
+      })
+    } catch (error) {
+      throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: "DB_ERROR while fetching user"})
+    }
+    if(!user){
+      throw new TRPCError({code: "NOT_FOUND", message: "User does not exist"})
+    }
+    return user.id;
+
+  })
 })
-
-
-});
