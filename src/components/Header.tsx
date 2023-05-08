@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useId, useState } from "react";
 import {
   MagnifyingGlassIcon,
   PencilSquareIcon,
@@ -33,6 +33,7 @@ const Header = () => {
     setUserId("");
     setIsLoggedIn(false);
   };
+
   return (
     <header className="flex h-16  w-full items-center justify-between border-b border-red-50/60 px-7">
       <div className="flex space-x-5">

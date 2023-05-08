@@ -67,6 +67,8 @@ const Post = ({ id }: { id: string }) => {
 
   useEffect(() => {
     if (userId && post.data && userId === post.data.user.id) {
+      console.log("User id: ", userId);
+      console.log(post.data.user.id);
       setEditable(true);
     }
   }, [userId, post.data]);
@@ -74,7 +76,6 @@ const Post = ({ id }: { id: string }) => {
   // initialize if post has been already liked before by the user (from db)
   useEffect(() => {
     if (isPostLiked.data) {
-      console.log(isPostLiked.data);
       setIsLiked(isPostLiked.data.isLiked);
     }
   }, [isPostLiked.data]);
@@ -113,19 +114,6 @@ const Post = ({ id }: { id: string }) => {
       await post.refetch();
     }
   };
-
-  useEffect(() => {
-    if (updatePost.error) {
-      console.log("updatePost:", updatePost.error);
-    }
-  }, [updatePost.error]);
-
-  useEffect(() => {
-    if (post.error) {
-      console.log("error:", post.error);
-    }
-  }, [post.error]);
-
   const onEditHandler = () => {
     setEdit(true);
     if (post.data) {

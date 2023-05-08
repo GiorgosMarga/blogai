@@ -12,11 +12,12 @@ import { useSetRecoilState } from "recoil";
 const Home: NextPage = () => {
   const userId = api.user.whoIs.useQuery(
     {},
-    { retry: false, staleTime: Infinity }
+    { retry: false, staleTime: Infinity, refetchOnMount: "always" }
   );
   const posts = api.post.getPosts.useQuery();
 
   const setUserId = useSetRecoilState(userAtom);
+
   useEffect(() => {
     if (userId.data) setUserId(userId.data);
   }, [userId.data]);

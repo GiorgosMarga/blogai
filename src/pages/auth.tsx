@@ -5,8 +5,6 @@ import { useEffect, useState } from "react";
 import { PulseLoader } from "react-spinners";
 import { api } from "~/utils/api";
 import type { TRPCError } from "@trpc/server";
-import { userAtom } from "~/atoms/userAtom";
-import { useRecoilState, useSetRecoilState } from "recoil";
 
 enum FormState {
   LOGIN = "login",
@@ -14,7 +12,6 @@ enum FormState {
 }
 
 const Auth: NextPage = () => {
-  const setUserId = useSetRecoilState(userAtom);
   const [selected, setSelected] = useState<FormState>(FormState.LOGIN);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
@@ -85,7 +82,6 @@ const Auth: NextPage = () => {
   useEffect(() => {
     const handleRedirect = async () => {
       if (loginUser.isSuccess) {
-        setUserId(loginUser.data.id);
         await router.push("/");
       }
       if (registerUser.isSuccess) {
