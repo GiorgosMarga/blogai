@@ -7,13 +7,15 @@ import {
 import { BiLogOut, BiLogIn } from "react-icons/bi";
 import { useRouter } from "next/router";
 import { api } from "~/utils/api";
+import { userAtom } from "~/atoms/userAtom";
+import { useSetRecoilState } from "recoil";
 const Header = () => {
   const router = useRouter();
+  const setUserId = useSetRecoilState(userAtom);
   const logoutUser = api.user.logoutUser.useMutation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const onClickHandler = async () => {
     if (document.cookie) {
-      console.log("cookie:", document);
       return await router.push("/newPost");
     }
     await router.push("/auth");
@@ -28,6 +30,7 @@ const Header = () => {
 
   const onLogoutHandler = () => {
     logoutUser.mutate();
+    setUserId("");
     setIsLoggedIn(false);
   };
   return (
