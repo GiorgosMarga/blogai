@@ -2,137 +2,189 @@ import { type NextPage } from "next";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect, useState } from "react";
-import {PulseLoader} from "react-spinners"
+import { PulseLoader } from "react-spinners";
 import { api } from "~/utils/api";
 import type { TRPCError } from "@trpc/server";
 import { userAtom } from "~/atoms/userAtom";
-import { useRecoilState } from "recoil";
-
+import { useRecoilState, useSetRecoilState } from "recoil";
 
 enum FormState {
-    LOGIN= 'login',
-    REGISTER= 'register'
+  LOGIN = "login",
+  REGISTER = "register",
 }
 
 const Auth: NextPage = () => {
-    const [userId,setUserId] = useRecoilState(userAtom)
-    const [selected, setSelected] = useState<FormState>(FormState.LOGIN)
-    const [email,setEmail] = useState<string>('')
-    const [password,setPassword] = useState<string>('')
-    const [confirmPassword,setConfirmPassword] = useState<string>('')
-    const [fullName,setFullName] = useState<string>('')
-    const router = useRouter()
-    //trpc
-    const loginUser = api.user.loginUser.useMutation();
-    const registerUser = api.user.registerUser.useMutation();
+  const setUserId = useSetRecoilState(userAtom);
+  const [selected, setSelected] = useState<FormState>(FormState.LOGIN);
+  const [email, setEmail] = useState<string>("");
+  const [password, setPassword] = useState<string>("");
+  const [confirmPassword, setConfirmPassword] = useState<string>("");
+  const [fullName, setFullName] = useState<string>("");
+  const router = useRouter();
+  //trpc
+  const loginUser = api.user.loginUser.useMutation();
+  const registerUser = api.user.registerUser.useMutation();
 
-    const changeFormHandler = () => {
-        loginUser.reset()
-        registerUser.reset()
-        setPassword('')
-        setConfirmPassword('')
-        setEmail('')
-        setSelected((prevState) => {
-            if(prevState === FormState.LOGIN){
-                return FormState.REGISTER
-            }
-            return FormState.LOGIN
-        })
-    }
+  const changeFormHandler = () => {
+    loginUser.reset();
+    registerUser.reset();
+    setPassword("");
+    setConfirmPassword("");
+    setEmail("");
+    setSelected((prevState) => {
+      if (prevState === FormState.LOGIN) {
+        return FormState.REGISTER;
+      }
+      return FormState.LOGIN;
+    });
+  };
 
-    const formatError = (error: string | undefined) => {
-        if(error && error.startsWith("[")){
-            const json = JSON.parse(error) as TRPCError[]
-            if(json){
-                const jsonError = json.at(0)
-                return jsonError?.message
-            }
-        }
-        return error;
+  const formatError = (error: string | undefined) => {
+    if (error && error.startsWith("[")) {
+      const json = JSON.parse(error) as TRPCError[];
+      if (json) {
+        const jsonError = json.at(0);
+        return jsonError?.message;
+      }
     }
+    return error;
+  };
 
-    const handleFullNameChange = (e: React.FormEvent<HTMLInputElement>) => {
-        setFullName(e.currentTarget.value)
-    }
-    const handlePasswordChange = (e: React.FormEvent<HTMLInputElement>) => {
-        setPassword(e.currentTarget.value)
-    }
-    const handleEmailChange = (e: React.FormEvent<HTMLInputElement>) => {
-        setEmail(e.currentTarget.value)
-    }
+  const handleFullNameChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setFullName(e.currentTarget.value);
+  };
+  const handlePasswordChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setPassword(e.currentTarget.value);
+  };
+  const handleEmailChange = (e: React.FormEvent<HTMLInputElement>) => {
+    setEmail(e.currentTarget.value);
+  };
 
-    const handleConfirmPasswordChange = (e: React.FormEvent<HTMLInputElement>) => {
-        setConfirmPassword(e.currentTarget.value)
+  const handleConfirmPasswordChange = (
+    e: React.FormEvent<HTMLInputElement>
+  ) => {
+    setConfirmPassword(e.currentTarget.value);
+  };
+  const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    if (selected === FormState.LOGIN && email && password) {
+      loginUser.mutate({ email, password });
+      return;
     }
-    const handleFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault();
-        if((selected === FormState.LOGIN) && email && password){
-            loginUser.mutate({email,password})
-            return;
-        }
-        if(selected === FormState.REGISTER) {
-            if(password !== confirmPassword){
-                // Handle password error logic goes here
-                console.log('Different passwords')
-                return;
-            }
-            if(password && email){
-                registerUser.mutate({email,password,fullName})
-            }
-        }
+    if (selected === FormState.REGISTER) {
+      if (password !== confirmPassword) {
+        // Handle password error logic goes here
+        console.log("Different passwords");
+        return;
+      }
+      if (password && email) {
+        registerUser.mutate({ email, password, fullName });
+      }
     }
-    useEffect(() => {
-        const handleRedirect = async() => {
-            if(loginUser.isSuccess){
-                setUserId(loginUser.data.id)
-                await router.push('/')
-            }
-            if(registerUser.isSuccess){
-                await router.push('/')
-    
-            }
-        }
-        handleRedirect().catch(err => console.log(err))
-        
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [loginUser, registerUser])
-    
-    return (<>
-        <Head>
-            <title>Login</title>
-            <meta name="description" content="Generated by create-t3-app" />
-            <link rel="icon" href="/favicon.ico" />
-        </Head>
-        <main className="flex min-h-screen h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-[#111827] to-[#15162c]">
-            <div className="flex flex-col bg-[#141932] rounded-lg p-1 w-[50%] h-[60%] shadow-xl">
-                <div className="flex w-full  h-fit p-3 border-b border-red-50">
-                    <button onClick={
-                        changeFormHandler
-                    } className={`font-bold text-lg flex-grow text-center cursor-pointer border-r border-red-50 hover:text-blue-500 ${selected === FormState.LOGIN ? "text-blue-500" : "text-white" }`}>Login</button>
-                    <button onClick={
-                        changeFormHandler
-                    } className={`font-bold text-lg flex-grow text-center cursor-pointer hover:text-blue-500 ${selected === FormState.REGISTER ? "text-blue-500" : "text-white" }`}>Register</button>
-                </div>
-                <form 
-                onSubmit={handleFormSubmit}
-                className="text-white flex justify-center items-center flex-col space-y-4 h-full">
-        
-                        <input id="email" value={email} onChange={handleEmailChange} className="bg-[#141932] outline-none p-1 border-b border-gray-600  text-white pl-3 font-light focus:border-blue-500 focus:border-b-2 transition-all duration-150 focus:scale-105 w-[60%]" placeholder="Email"/>
-                        <input id="password" value={password} type="password" onChange={handlePasswordChange} className="bg-[#141932] outline-none p-1 border-b border-gray-600 w-[60%] text-white pl-3 font-light focus:border-blue-500 focus:border-b-2 transition-all duration-150 focus:scale-105" placeholder="Password"/>
-                        {selected === FormState.REGISTER ?
-                        <>
-                        <input id="confirmPassword" value={confirmPassword} type="password" onChange={handleConfirmPasswordChange} className="bg-[#141932] outline-none p-1 border-b border-gray-600 w-[60%] text-white pl-3 font-light focus:border-blue-500 focus:border-b-2 transition-all duration-150 focus:scale-105 ease-in" placeholder="Confirm Password"/>
-                        <input id="fullName" value={fullName} onChange={handleFullNameChange} className="bg-[#141932] outline-none p-1 border-b border-gray-600 w-[60%] text-white pl-3 font-light focus:border-blue-500 focus:border-b-2 transition-all duration-150 focus:scale-105 ease-in" placeholder="Full Name"/>
-                        
-                        </>: null}
-                        {(loginUser.error || registerUser.error) ? <h1 className="text-red-500 text-center font-semibold w-fit" >{formatError(loginUser.error?.message) || registerUser.error?.message}</h1> : null}    
-                        <div>
-                        {(loginUser.isLoading || registerUser.isLoading) ? <PulseLoader color="#3b82f6" className="mt-10"/> : <button type='submit' className="bg-gradient-to-br from-blue-500 to-blue-600 px-5 py-2 w-44 rounded-lg mt-10 hover:scale-105 transition-all duration-100 ease-linear">{selected === FormState.LOGIN ? "Login": "Register"}</button>}
-                        </div>
-                </form>
+  };
+  useEffect(() => {
+    const handleRedirect = async () => {
+      if (loginUser.isSuccess) {
+        setUserId(loginUser.data.id);
+        await router.push("/");
+      }
+      if (registerUser.isSuccess) {
+        await router.push("/");
+      }
+    };
+    handleRedirect().catch((err) => console.log(err));
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loginUser, registerUser]);
+
+  return (
+    <>
+      <Head>
+        <title>Login</title>
+        <meta name="description" content="Generated by create-t3-app" />
+        <link rel="icon" href="/favicon.ico" />
+      </Head>
+      <main className="flex h-screen min-h-screen w-full flex-col items-center justify-center bg-gradient-to-b from-[#111827] to-[#15162c]">
+        <div className="flex h-[60%] w-[50%] flex-col rounded-lg bg-[#141932] p-1 shadow-xl">
+          <div className="flex h-fit  w-full border-b border-red-50 p-3">
+            <button
+              onClick={changeFormHandler}
+              className={`flex-grow cursor-pointer border-r border-red-50 text-center text-lg font-bold hover:text-blue-500 ${
+                selected === FormState.LOGIN ? "text-blue-500" : "text-white"
+              }`}
+            >
+              Login
+            </button>
+            <button
+              onClick={changeFormHandler}
+              className={`flex-grow cursor-pointer text-center text-lg font-bold hover:text-blue-500 ${
+                selected === FormState.REGISTER ? "text-blue-500" : "text-white"
+              }`}
+            >
+              Register
+            </button>
+          </div>
+          <form
+            onSubmit={handleFormSubmit}
+            className="flex h-full flex-col items-center justify-center space-y-4 text-white"
+          >
+            <input
+              id="email"
+              value={email}
+              onChange={handleEmailChange}
+              className="w-[60%] border-b border-gray-600 bg-[#141932] p-1  pl-3 font-light text-white outline-none transition-all duration-150 focus:scale-105 focus:border-b-2 focus:border-blue-500"
+              placeholder="Email"
+            />
+            <input
+              id="password"
+              value={password}
+              type="password"
+              onChange={handlePasswordChange}
+              className="w-[60%] border-b border-gray-600 bg-[#141932] p-1 pl-3 font-light text-white outline-none transition-all duration-150 focus:scale-105 focus:border-b-2 focus:border-blue-500"
+              placeholder="Password"
+            />
+            {selected === FormState.REGISTER ? (
+              <>
+                <input
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  type="password"
+                  onChange={handleConfirmPasswordChange}
+                  className="w-[60%] border-b border-gray-600 bg-[#141932] p-1 pl-3 font-light text-white outline-none transition-all duration-150 ease-in focus:scale-105 focus:border-b-2 focus:border-blue-500"
+                  placeholder="Confirm Password"
+                />
+                <input
+                  id="fullName"
+                  value={fullName}
+                  onChange={handleFullNameChange}
+                  className="w-[60%] border-b border-gray-600 bg-[#141932] p-1 pl-3 font-light text-white outline-none transition-all duration-150 ease-in focus:scale-105 focus:border-b-2 focus:border-blue-500"
+                  placeholder="Full Name"
+                />
+              </>
+            ) : null}
+            {loginUser.error || registerUser.error ? (
+              <h1 className="w-fit text-center font-semibold text-red-500">
+                {formatError(loginUser.error?.message) ||
+                  registerUser.error?.message}
+              </h1>
+            ) : null}
+            <div>
+              {loginUser.isLoading || registerUser.isLoading ? (
+                <PulseLoader color="#3b82f6" className="mt-10" />
+              ) : (
+                <button
+                  type="submit"
+                  className="mt-10 w-44 rounded-lg bg-gradient-to-br from-blue-500 to-blue-600 px-5 py-2 transition-all duration-100 ease-linear hover:scale-105"
+                >
+                  {selected === FormState.LOGIN ? "Login" : "Register"}
+                </button>
+              )}
             </div>
-        </main>
-    </>)
-}
+          </form>
+        </div>
+      </main>
+    </>
+  );
+};
 
-export default Auth
+export default Auth;

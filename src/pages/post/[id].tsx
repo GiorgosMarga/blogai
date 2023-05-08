@@ -110,7 +110,7 @@ const Post = ({ id }: { id: string }) => {
         content,
       });
       setEdit(false);
-      post.refetch();
+      await post.refetch();
     }
   };
 
