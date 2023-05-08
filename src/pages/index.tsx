@@ -20,7 +20,8 @@ const Home: NextPage = () => {
 
   useEffect(() => {
     if (userId.data) setUserId(userId.data);
-  }, [userId.data]);
+    if (userId.error) setUserId("");
+  }, [userId]);
 
   return (
     <>
