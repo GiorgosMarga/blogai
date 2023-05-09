@@ -33,13 +33,13 @@ const Home: NextPage = () => {
       <main className="flex min-h-screen flex-col  bg-gradient-to-b from-[#111827] to-[#15162c]">
         <Header />
         <div className="flex h-full flex-grow ">
-          <div className=" flex flex-col border-r border-white/40 p-10 pl-40 pr-16 pt-5">
+          <div className=" flex min-w-[80%] flex-col border-r border-white/40  p-10 pl-40 pr-16 pt-5">
             <div className="sticky top-0 z-10 mb-10 flex items-center justify-start space-x-10 border-b border-red-50 bg-[#111827] pb-5 pt-4 text-white">
               <PlusIcon className="h-5 w-5 text-red-50" />
               <p>For you</p>
               <p>Following</p>
             </div>
-            <div className="flex flex-col">
+            <div className="flex  flex-grow flex-col">
               {posts.data ? (
                 posts.data.map((post) => {
                   return (
@@ -63,7 +63,7 @@ const Home: NextPage = () => {
               )}
             </div>
           </div>
-          <div className="hidden  w-[50%] flex-col p-10 md:flex">
+          <div className="hidden  flex-col p-10 md:flex md:w-[50%]">
             <h2 className="text-lg font-semibold text-white">
               Monthly Best Articles
             </h2>
