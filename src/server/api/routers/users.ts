@@ -171,14 +171,15 @@ export const usersRouter = createTRPCRouter({
     return user.bookmarked.includes(input.postId)
   }),
   whoIs: authenticatedProcedure.input(z.any()).query(async ({ctx}) =>{
-    let user: {id: string} | null
+    let user: {id: string, bookmarked: string[]} | null
     try {
       user = await prisma.user.findFirst({
         where: {
           id: ctx.user.id
         },
         select: {
-          id: true
+          id: true,
+          bookmarked: true
         }
       })
     } catch (error) {
@@ -187,7 +188,7 @@ export const usersRouter = createTRPCRouter({
     if(!user){
       throw new TRPCError({code: "NOT_FOUND", message: "User does not exist"})
     }
-    return user.id;
+    return user;
 
   })
 })

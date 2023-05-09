@@ -53,10 +53,13 @@ const Header = () => {
         </div>
         <BellIcon className="h-6 w-6 text-red-50" />
         {!isLoggedIn && (
-          <BiLogIn
-            className="h-6 w-6 cursor-pointer text-red-50 hover:text-white"
+          <div
+            className="flex cursor-pointer items-center justify-center space-x-2 text-red-50 hover:text-white"
             onClick={() => router.push("/auth")}
-          />
+          >
+            <BiLogIn className="h-6 w-6 cursor-pointer text-red-50 " />
+            <p>Login</p>
+          </div>
         )}
         {isLoggedIn && (
           <>

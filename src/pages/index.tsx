@@ -15,11 +15,10 @@ const Home: NextPage = () => {
     { retry: false, staleTime: Infinity, refetchOnMount: "always" }
   );
   const posts = api.post.getPosts.useQuery();
-
   const setUserId = useSetRecoilState(userAtom);
 
   useEffect(() => {
-    if (userId.data) setUserId(userId.data);
+    if (userId.data) setUserId(userId.data.id);
     if (userId.error) setUserId("");
   }, [userId]);
 
