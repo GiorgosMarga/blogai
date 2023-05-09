@@ -39,7 +39,7 @@ export const usersRouter = createTRPCRouter({
     const user = await UserClass.createUser({email,password,fullName})
     const jwt = jsonwebtoken.sign({email:user.email, id: user.id, role: user.role},env.JWT_KEY);
 
-    ctx.res.setHeader('Set-Cookie', `user=${jwt}`)
+    ctx.res.setHeader('Set-Cookie', `user=${jwt}; path=/;`)
     return user;
   }),
   setAdmin: authenticatedProcedure.input(z.object({
