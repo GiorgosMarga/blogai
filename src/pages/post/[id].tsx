@@ -67,8 +67,6 @@ const Post = ({ id }: { id: string }) => {
 
   useEffect(() => {
     if (userId && post.data && userId === post.data.user.id) {
-      console.log("User id: ", userId);
-      console.log(post.data.user.id);
       setEditable(true);
     }
   }, [userId, post.data]);
