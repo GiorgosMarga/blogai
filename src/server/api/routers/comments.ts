@@ -3,14 +3,14 @@ import prisma from "~/db/client";
 import {z} from 'zod'
 import { TRPCError } from "@trpc/server";
 import { DBConnectionError } from "@giorgosmarga/errors";
-import { Post } from "@prisma/client";
+
 export const commentsRouter = createTRPCRouter({
     getComment: authenticatedProcedure.input(z.object({
         commentId: z.string().uuid()
-    })).query(({input}) => {
+    })).query(async ({input}) => {
         
         try  {
-            const comment = prisma.comment.findFirst({where: {id: input.commentId}})    
+            const comment = await prisma.comment.findFirst({where: {id: input.commentId}})    
             if(!comment){
                 throw new TRPCError({message: "Post was not found", code: "NOT_FOUND"})
             }
