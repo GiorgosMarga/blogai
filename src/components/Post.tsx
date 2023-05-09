@@ -1,11 +1,10 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   BookmarkIcon,
   MinusCircleIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { api } from "~/utils/api";
 interface PostInput {
   id: string;
   content: string;
