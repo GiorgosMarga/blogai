@@ -2,12 +2,13 @@ import React, { useState } from "react";
 import { api } from "~/utils/api";
 import { userAtom } from "~/atoms/userAtom";
 import { useRecoilValue } from "recoil";
+import { CommentWithUser } from "~/pages/post/[id]";
 const CreateComment = ({
   postId,
   updateComments,
 }: {
   postId: string;
-  updateComments: any;
+  updateComments: (comment: CommentWithUser) => void;
 }) => {
   const userId = useRecoilValue(userAtom);
   const createComment = api.comment.createComment.useMutation();

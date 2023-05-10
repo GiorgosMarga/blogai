@@ -1,7 +1,6 @@
 import { z } from "zod";
 import { authenticatedProcedure, createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import prisma from "~/db/client";
-import type { Post , User, Comment} from "@prisma/client";
 import {Category,Role} from "@prisma/client"
 import {BadRequestError, DBConnectionError} from "@giorgosmarga/errors"
 import { PostClass } from "~/utils/Post";

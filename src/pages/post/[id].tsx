@@ -21,7 +21,7 @@ import CreateComment from "~/components/CreateComment";
 import Link from "next/link";
 import type { Comment as typeComment } from "@prisma/client";
 
-interface CommentWithUser extends typeComment {
+export interface CommentWithUser extends typeComment {
   creator: {
     fullName: string;
   };
