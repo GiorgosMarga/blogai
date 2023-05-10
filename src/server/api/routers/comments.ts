@@ -3,6 +3,15 @@ import prisma from "~/db/client";
 import {z} from 'zod'
 import { TRPCError } from "@trpc/server";
 import { DBConnectionError } from "@giorgosmarga/errors";
+import redisClient from "~/db/redisClient";
+import type { Comment, Post } from "@prisma/client";
+
+interface CommentWithCreator  extends Comment{
+    creator: {
+        fullName: string
+    }
+}
+
 
 export const commentsRouter = createTRPCRouter({
     getComment: authenticatedProcedure.input(z.object({
@@ -29,8 +38,22 @@ export const commentsRouter = createTRPCRouter({
                     content: input.content,
                     creatorId: ctx.user.id,
                     postId: input.postId
+                },
+                include: {
+                    creator: {
+                        select: {
+                            fullName: true
+                        }
+                    }
                 }
             }) 
+            const isPostCached = await redisClient.get(input.postId)
+            if(isPostCached){
+                // if the post is cached we need to update it 
+                const post = JSON.parse(isPostCached) as (Post & {comments: CommentWithCreator[]})
+                post.comments.push(comment)
+                await redisClient.set(post.id, JSON.stringify(post))
+            }
             return comment
         } catch (error) {
             throw new DBConnectionError('DB_ERROR while creating comment')

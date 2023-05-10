@@ -144,15 +144,28 @@ export const usersRouter = createTRPCRouter({
           likedPosts: isPostLiked ? user.likedPosts.filter(postId => postId !== input.postId) : [...user.likedPosts, input.postId]  
         }
       })
-      await prisma.post.update({
+      const updatedPost = await prisma.post.update({
         where: {
           id:input.postId
         },
         data: {
           likes: isPostLiked ?  {decrement: 1}: {increment: 1}
+        },
+        include: {
+          user: true, //include these 2 so we can cache the result
+          comments: {
+            include: {
+              creator: {
+                select: {
+                  fullName: true
+                }
+              }
+            }
+          }
         }
       })
-      await redisClient.del(input.postId)
+      console.log(updatedPost)
+      await redisClient.set(updatedPost.id, JSON.stringify(updatedPost))
       return updatedUser.likedPosts;
     } catch (error) {
       throw new DBConnectionError("DB_ERROR while updating bookmarked.")

@@ -4,7 +4,15 @@ import { NotFoundError, DBConnectionError } from "@giorgosmarga/errors";
 export class PostClass {
     static async getPostById(id: string) {
         try {
-            const post = await prisma.post.findFirst({where:{id}, include: {user: true, comments: true}})
+            const post = await prisma.post.findFirst({where:{id}, include: {user: true, comments: {
+                include: {
+                    creator: {
+                        select: {
+                            fullName: true
+                        }
+                    }
+                }
+            } }})
             if(!post){
                 throw new NotFoundError('Post was not found.')
             }

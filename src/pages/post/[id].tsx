@@ -19,6 +19,14 @@ import { userAtom } from "~/atoms/userAtom";
 import { BarLoader } from "react-spinners";
 import CreateComment from "~/components/CreateComment";
 import Link from "next/link";
+import type { Comment as typeComment } from "@prisma/client";
+
+interface CommentWithUser extends typeComment {
+  creator: {
+    fullName: string;
+  };
+}
+
 export const getServerSideProps = (context: GetServerSidePropsContext) => {
   const { id } = context.query;
 
@@ -28,6 +36,7 @@ export const getServerSideProps = (context: GetServerSidePropsContext) => {
     },
   };
 };
+
 const Post = ({ id }: { id: string }) => {
   const userId = useRecoilValue(userAtom);
   const post = api.post.getPost.useQuery(
@@ -61,10 +70,15 @@ const Post = ({ id }: { id: string }) => {
   const [editable, setEditable] = useState(false);
   const [edit, setEdit] = useState(false);
   const [content, setContent] = useState("");
+  const [comments, setComments] = useState<CommentWithUser[]>([]);
+
   // initialize likes from db
   useEffect(() => {
     if (post.data) {
       setLikes(post.data.likes);
+      if (post.data.comments) {
+        setComments(post.data.comments);
+      }
     }
   }, [post.data]);
 
@@ -95,6 +109,10 @@ const Post = ({ id }: { id: string }) => {
     }
     setIsLiked((prevState) => !prevState);
     likePost.mutate({ postId: id });
+  };
+
+  const updateComments = (comment: CommentWithUser) => {
+    setComments((prevState) => [...prevState, comment]);
   };
 
   const bookmarkPostHandler = () => {
@@ -175,7 +193,7 @@ const Post = ({ id }: { id: string }) => {
                   <Link href="#comments" scroll={true}>
                     <ChatBubbleOvalLeftEllipsisIcon className="h-5 w-5 text-gray-300" />
                   </Link>
-                  <p>0</p>
+                  <p>{post.data.comments.length}</p>
                 </div>
               </div>
               <div className="flex items-center space-x-3 text-gray-400">
@@ -253,9 +271,29 @@ const Post = ({ id }: { id: string }) => {
             </div>
           </>
         )}
-        <div className="mt-10 flex h-[500px] w-[80%] flex-col ">
-          <Comment />
-          <CreateComment />
+        <div className="mt-10 flex w-[80%] flex-col ">
+          {comments
+            ? comments.map((comment) => {
+                return (
+                  <Comment
+                    key={comment.id}
+                    content={comment.content}
+                    isAuthor={comment.creatorId === post?.data?.user.id}
+                    creator={comment.creator.fullName}
+                    createdAt={`${new Date(
+                      comment.createdAt
+                    ).getDate()} ${new Intl.DateTimeFormat("en-US", {
+                      month: "long",
+                    }).format(new Date(comment.createdAt))} ${new Date(
+                      comment.createdAt
+                    ).getFullYear()}`}
+                  />
+                );
+              })
+            : null}
+          {userId && post.data && (
+            <CreateComment postId={id} updateComments={updateComments} />
+          )}
         </div>
       </main>
     </>

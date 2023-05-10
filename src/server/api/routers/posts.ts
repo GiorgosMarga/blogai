@@ -1,7 +1,7 @@
 import { z } from "zod";
 import { authenticatedProcedure, createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import prisma from "~/db/client";
-import type { Post , User} from "@prisma/client";
+import type { Post , User, Comment} from "@prisma/client";
 import {Category,Role} from "@prisma/client"
 import {BadRequestError, DBConnectionError} from "@giorgosmarga/errors"
 import { PostClass } from "~/utils/Post";
@@ -24,15 +24,8 @@ export const postsRouter = createTRPCRouter({
         id: z.string().uuid()
     })).query(async ({input: {id}}) => {
         const cachedPost = await redisClient.get(id)
-        if(cachedPost){
-            console.log("cached")
-            return JSON.parse(cachedPost) as Post &  {
-                user: User
-            };
-        }
         const post = await PostClass.getPostById(id)
         await redisClient.set(post.id, JSON.stringify(post))
-        // await redisClient.disconnect()
         return post;
     }),
     createPost: authenticatedProcedure.input(z.object({
