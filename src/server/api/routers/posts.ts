@@ -1,10 +1,11 @@
 import { z } from "zod";
 import { authenticatedProcedure, createTRPCRouter, publicProcedure } from "~/server/api/trpc";
 import prisma from "~/db/client";
-import {Category,Role} from "@prisma/client"
+import {Category,Post,Role, User} from "@prisma/client"
 import {BadRequestError, DBConnectionError} from "@giorgosmarga/errors"
 import { PostClass } from "~/utils/Post";
 import redisClient from "~/db/redisClient";
+import { CommentWithUser } from "~/pages/post/[id]";
 export const postsRouter = createTRPCRouter({
     getPosts: publicProcedure.query(async () => {
         
@@ -23,6 +24,12 @@ export const postsRouter = createTRPCRouter({
         id: z.string().uuid()
     })).query(async ({input: {id}}) => {
         const cachedPost = await redisClient.get(id)
+        if(cachedPost){
+            return JSON.parse(cachedPost) as Post &  {
+                user: User,
+                comments: CommentWithUser[]
+            };
+        }
         const post = await PostClass.getPostById(id)
         await redisClient.set(post.id, JSON.stringify(post))
         return post;
@@ -69,5 +76,9 @@ export const postsRouter = createTRPCRouter({
             return {...deletedPost,deletedBy: ctx.user.id,role:ctx.user.role};
         }
         throw new BadRequestError('You are not authorized to delete this post')
+    }),
+    getUserPosts: authenticatedProcedure.input(z.any()).query(async ({ctx}) => {
+        const posts = await PostClass.getUserPosts(ctx.user.id);
+        return posts;
     })
 })

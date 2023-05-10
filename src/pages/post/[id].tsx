@@ -13,15 +13,15 @@ import {
   ShareIcon,
   EllipsisHorizontalIcon,
 } from "@heroicons/react/24/outline";
-import Comment from "../../components/Comment";
+import CommentComponent from "../../components/Comment";
 import { useRecoilValue } from "recoil";
 import { userAtom } from "~/atoms/userAtom";
 import { BarLoader } from "react-spinners";
 import CreateComment from "~/components/CreateComment";
 import Link from "next/link";
-import type { Comment as typeComment } from "@prisma/client";
+import type { Comment } from "@prisma/client";
 
-export interface CommentWithUser extends typeComment {
+export interface CommentWithUser extends Comment {
   creator: {
     fullName: string;
   };
@@ -76,6 +76,7 @@ const Post = ({ id }: { id: string }) => {
   useEffect(() => {
     if (post.data) {
       setLikes(post.data.likes);
+      const comms = post.data.comments;
       if (post.data.comments) {
         setComments(post.data.comments);
       }
@@ -275,7 +276,7 @@ const Post = ({ id }: { id: string }) => {
           {comments
             ? comments.map((comment) => {
                 return (
-                  <Comment
+                  <CommentComponent
                     key={comment.id}
                     content={comment.content}
                     isAuthor={comment.creatorId === post?.data?.user.id}

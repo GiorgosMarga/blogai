@@ -21,11 +21,14 @@ export class PostClass {
             throw new DBConnectionError("DB_ERROR while fetching post by id.")
         }
     }
-    static async getUserPosts(userId: string): Promise<Post[]> {
+    static async getUserPosts(userId: string) {
         try{
             const posts = await prisma.post.findMany({
                 where: {
                     userId
+                },
+                include: {
+                    user: true
                 }
             })
             return posts;
