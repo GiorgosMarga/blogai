@@ -12,8 +12,17 @@ interface PostInput {
   createdAt: Date;
   creator: string;
   tag: string | undefined;
+  creatorId: string;
 }
-const Post = ({ content, title, createdAt, creator, tag, id }: PostInput) => {
+const Post = ({
+  content,
+  title,
+  createdAt,
+  creator,
+  tag,
+  id,
+  creatorId,
+}: PostInput) => {
   const formatDate = (timestamp: Date) => {
     const date = new Date(timestamp).getDate();
     const month = new Intl.DateTimeFormat("en-US", { month: "long" }).format(
@@ -29,22 +38,26 @@ const Post = ({ content, title, createdAt, creator, tag, id }: PostInput) => {
     return Math.ceil(contentLength / 250);
   };
   return (
-    <Link className="flex" href={`/post/${id}`} shallow prefetch={false}>
+    <div className="flex">
       <div className="mb-10 flex cursor-pointer flex-col border-b border-red-50 border-red-50/20 p-2 pb-5">
         <div className="flex items-center">
           <div className="mr-2 h-6 w-6 rounded-full bg-white" />
-          <p className="font-semibold text-white">{`${creator} - `}</p>
+          <Link href={`/user/${creatorId}`} shallow prefetch={false}>
+            <p className="font-semibold text-white">{`${creator} - `}</p>
+          </Link>
           <p className="ml-2 font-medium text-white/70">
             {formatDate(createdAt)}
           </p>
         </div>
-        <h1 className="mt-5 font-bold text-white">{title}</h1>
-        <p className="mt-3 font-light text-gray-400">
-          {`${content
-            .replaceAll("*", "")
-            .replaceAll("#", "")
-            .substring(0, 450)}...`}
-        </p>
+        <Link href={`/post/${id}`} shallow prefetch={false}>
+          <h1 className="mt-5 font-bold text-white">{title}</h1>
+          <p className="mt-3 font-light text-gray-400">
+            {`${content
+              .replaceAll("*", "")
+              .replaceAll("#", "")
+              .substring(0, 450)}...`}
+          </p>
+        </Link>
         <div className="mt-10 flex justify-between">
           <div className="flex items-center justify-center space-x-2">
             <p className="cursor-pointer rounded-lg bg-blue-500/40 px-2 font-light text-white transition-all duration-100 ease-linear hover:scale-105">
@@ -68,7 +81,7 @@ const Post = ({ content, title, createdAt, creator, tag, id }: PostInput) => {
       <div className="ml-5 flex w-[15%] items-center justify-center">
         <div className="h-[100px] w-[100px] cursor-pointer rounded-md bg-blue-500/40" />
       </div>
-    </Link>
+    </div>
   );
 };
 

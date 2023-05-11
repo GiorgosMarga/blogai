@@ -50,6 +50,7 @@ const Home: NextPage = () => {
                       createdAt={post.updatedAt}
                       creator={post.user.fullName}
                       tag={post.tags[0]}
+                      creatorId={post.user.id}
                     />
                   );
                 })

@@ -22,8 +22,8 @@ const User = ({ id }: { id: string }) => {
   // can get the users name without making an extra request on the
   // backend server
   const posts = api.post.getUserPosts.useQuery(
-    {},
-    { staleTime: Infinity, refetchOnMount: "always" }
+    { userId: id },
+    { staleTime: Infinity, refetchOnMount: "always", cacheTime: 0 }
   );
 
   return (
@@ -78,6 +78,7 @@ const User = ({ id }: { id: string }) => {
                     content={post.content}
                     title={post.title}
                     tag={post?.tags[0]}
+                    creatorId={id}
                   />
                 );
               })}

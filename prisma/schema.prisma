@@ -25,6 +25,8 @@ model User {
   comments                Comment[]
   bookmarked              String[]
   likedPosts              String[]
+  followers               Int       @default(0)
+  
 
   @@index([email])
   @@index([id])
