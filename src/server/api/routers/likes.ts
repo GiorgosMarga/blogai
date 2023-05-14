@@ -56,7 +56,7 @@ export const likesRouter = createTRPCRouter({
             },
           })
           //for ts error
-          .then(() => {});
+          .then();
         redisClient.del(input.postId);
         return { msg: "Created" };
       } catch (error) {
@@ -80,7 +80,7 @@ export const likesRouter = createTRPCRouter({
               },
             },
           })
-          .then(() => {}); //for ts error
+          .then(); //for ts error
         redisClient.del(input.postId);
 
         return { msg: "Deleted" };
