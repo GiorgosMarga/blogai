@@ -57,7 +57,7 @@ export const likesRouter = createTRPCRouter({
           })
           .then()
           .catch();
-        redisClient.del(input.postId);
+        await redisClient.del(input.postId);
         return { msg: "Created" };
       } catch (error) {
         throw new DBConnectionError("DB_ERROR while liking the post");
@@ -82,7 +82,7 @@ export const likesRouter = createTRPCRouter({
           })
           .then()
           .catch();
-        redisClient.del(input.postId);
+        await redisClient.del(input.postId);
 
         return { msg: "Deleted" };
       } catch (error) {
