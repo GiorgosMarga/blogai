@@ -48,12 +48,15 @@ export const likesRouter = createTRPCRouter({
     .input(z.object({ postId: z.string().uuid() }))
     .mutation(async ({ input, ctx }) => {
       try {
-        const _ = await prisma.likes.create({
-          data: {
-            userId: ctx.user.id,
-            postId: input.postId,
-          },
-        });
+        await prisma.likes
+          .create({
+            data: {
+              userId: ctx.user.id,
+              postId: input.postId,
+            },
+          })
+          .then()
+          .catch();
         redisClient.del(input.postId);
         return { msg: "Created" };
       } catch (error) {
@@ -68,14 +71,17 @@ export const likesRouter = createTRPCRouter({
     )
     .mutation(async ({ ctx, input }) => {
       try {
-        const _ = await prisma.likes.delete({
-          where: {
-            userId_postId: {
-              userId: ctx.user.id,
-              postId: input.postId,
+        await prisma.likes
+          .delete({
+            where: {
+              userId_postId: {
+                userId: ctx.user.id,
+                postId: input.postId,
+              },
             },
-          },
-        });
+          })
+          .then()
+          .catch();
         redisClient.del(input.postId);
 
         return { msg: "Deleted" };
