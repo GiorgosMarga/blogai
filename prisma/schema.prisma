@@ -24,12 +24,20 @@ model User {
   verificationIdTimestamp DateTime  @default(now())
   comments                Comment[]
   bookmarked              String[]
-  likedPosts              String[]
   followers               Int       @default(0)
-  
+  likes                   Likes[]
 
   @@index([email])
   @@index([id])
+}
+
+model Likes {
+  userId String
+  postId String
+  user   User   @relation(references: [id], fields: [userId])
+  post   Post   @relation(references: [id], fields: [postId])
+
+  @@unique([userId, postId])
 }
 
 model Post {
@@ -39,7 +47,7 @@ model Post {
   content    String
   user       User      @relation(fields: [userId], references: [id], name: "creator")
   userId     String
-  likes      Int       @default(0)
+  // likes      Int       @default(0)
   cover      String?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @default(now())
@@ -48,6 +56,7 @@ model Post {
   isVisible  Boolean   @default(false)
   isFeatured Boolean   @default(false)
   comments   Comment[]
+  likes      Likes[]
 
   @@index([id])
 }

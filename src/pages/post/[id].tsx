@@ -20,7 +20,7 @@ import { BarLoader } from "react-spinners";
 import CreateComment from "~/components/CreateComment";
 import Link from "next/link";
 import type { Comment } from "@prisma/client";
-
+import LoadingPostPage from "~/components/LoadingPostPage";
 export interface CommentWithUser extends Comment {
   creator: {
     fullName: string;
@@ -41,18 +41,18 @@ const Post = ({ id }: { id: string }) => {
   const userId = useRecoilValue(userAtom);
   const post = api.post.getPost.useQuery(
     { id },
-    { staleTime: Infinity, refetchOnMount: "always" }
+    { staleTime: Infinity, refetchOnMount: "always", cacheTime: 0 }
   );
   const bookmarkPost = api.user.bookmarkPost.useMutation();
-  const likePost = api.user.likePost.useMutation();
+  const likePost = api.like.likePost.useMutation();
+  const unlikePost = api.like.unlikePost.useMutation();
   const updatePost = api.post.updatePost.useMutation();
-  const isPostLiked = api.user.isPostLiked.useQuery(
+  const isPostLiked = api.like.isPostLiked.useQuery(
     { postId: id },
     {
       staleTime: Infinity,
       refetchOnMount: "always",
       retry: false,
-      cacheTime: 0,
     }
   );
   const isPostBookmarked = api.user.isPostBookmarked.useQuery(
@@ -61,7 +61,6 @@ const Post = ({ id }: { id: string }) => {
       staleTime: Infinity,
       refetchOnMount: "always",
       retry: false,
-      cacheTime: 0,
     }
   );
   const [likes, setLikes] = useState(0);
@@ -74,9 +73,9 @@ const Post = ({ id }: { id: string }) => {
 
   // initialize likes from db
   useEffect(() => {
-    if (post.data) {
-      setLikes(post.data.likes);
-      const comms = post.data.comments;
+    if (post.data && !post.isLoading) {
+      console.log("here");
+      setLikes(post.data._count.likes);
       if (post.data.comments) {
         setComments(post.data.comments);
       }
@@ -89,12 +88,13 @@ const Post = ({ id }: { id: string }) => {
     }
   }, [userId, post.data]);
 
-  // initialize if post has been already liked before by the user (from db)
+  // // initialize if post has been already liked before by the user (from db)
   useEffect(() => {
     if (isPostLiked.data) {
       setIsLiked(isPostLiked.data.isLiked);
     }
   }, [isPostLiked.data]);
+  // // initialize if post has been already bookmarked before by the user (from db)
 
   useEffect(() => {
     if (isPostBookmarked.data) {
@@ -103,13 +103,17 @@ const Post = ({ id }: { id: string }) => {
   }, [isPostBookmarked.data]);
 
   const likePostHandler = () => {
-    if (isLiked) {
-      setLikes((prevState) => prevState - 1);
-    } else {
-      setLikes((prevState) => prevState + 1);
-    }
     setIsLiked((prevState) => !prevState);
-    likePost.mutate({ postId: id });
+
+    if (post.data && post.data.id) {
+      if (isLiked) {
+        setLikes((prevState) => prevState - 1);
+        unlikePost.mutate({ postId: post.data.id });
+      } else {
+        setLikes((prevState) => prevState + 1);
+        likePost.mutate({ postId: post.data.id });
+      }
+    }
   };
 
   const updateComments = (comment: CommentWithUser) => {
@@ -140,6 +144,10 @@ const Post = ({ id }: { id: string }) => {
       setContent(post.data.content);
     }
   };
+  if (!post.data) {
+    return <LoadingPostPage />;
+  }
+
   return (
     <>
       <Head>
@@ -148,7 +156,7 @@ const Post = ({ id }: { id: string }) => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <main className="flex min-h-screen flex-col items-center justify-start  bg-gradient-to-b from-[#111827] to-[#15162c] px-36 py-10">
-        {post.data && (
+        {post.isSuccess && (
           <>
             <h1 className="mb-5 mt-16 w-[80%] justify-start text-5xl font-extrabold text-blue-500">
               {post.data.title}
