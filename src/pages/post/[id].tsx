@@ -21,6 +21,7 @@ import CreateComment from "~/components/CreateComment";
 import Link from "next/link";
 import type { Comment } from "@prisma/client";
 import LoadingPostPage from "~/components/LoadingPostPage";
+import { error } from "console";
 export interface CommentWithUser extends Comment {
   creator: {
     fullName: string;
@@ -38,15 +39,20 @@ export const getServerSideProps = (context: GetServerSidePropsContext) => {
 };
 
 const Post = ({ id }: { id: string }) => {
-  const userId = useRecoilValue(userAtom);
+  const userId = useRecoilValue(userAtom); //get global userId
+  // get post data
   const post = api.post.getPost.useQuery(
     { id },
     { staleTime: Infinity, refetchOnMount: "always", cacheTime: 0 }
   );
-  const bookmarkPost = api.user.bookmarkPost.useMutation();
+  // bookmark logic
+  const bookmarkPost = api.bookmark.bookmarkPost.useMutation();
+  // like logic
   const likePost = api.like.likePost.useMutation();
-  const unlikePost = api.like.unlikePost.useMutation();
+  // update post logic
   const updatePost = api.post.updatePost.useMutation();
+
+  // initiliaze logic
   const isPostLiked = api.like.isPostLiked.useQuery(
     { postId: id },
     {
@@ -55,7 +61,7 @@ const Post = ({ id }: { id: string }) => {
       retry: false,
     }
   );
-  const isPostBookmarked = api.user.isPostBookmarked.useQuery(
+  const isPostBookmarked = api.bookmark.isPostbookmarked.useQuery(
     { postId: id },
     {
       staleTime: Infinity,
@@ -74,7 +80,6 @@ const Post = ({ id }: { id: string }) => {
   // initialize likes from db
   useEffect(() => {
     if (post.data && !post.isLoading) {
-      console.log("here");
       setLikes(post.data._count.likes);
       if (post.data.comments) {
         setComments(post.data.comments);
@@ -93,14 +98,20 @@ const Post = ({ id }: { id: string }) => {
     if (isPostLiked.data) {
       setIsLiked(isPostLiked.data.isLiked);
     }
-  }, [isPostLiked.data]);
+    if (isPostLiked.error) {
+      setIsLiked(false);
+    }
+  }, [isPostLiked.data, isPostLiked.error]);
   // // initialize if post has been already bookmarked before by the user (from db)
 
   useEffect(() => {
     if (isPostBookmarked.data) {
-      setIsBookmarked(isPostBookmarked.data);
+      setIsBookmarked(isPostBookmarked.data.isBookmarked);
     }
-  }, [isPostBookmarked.data]);
+    if (isPostBookmarked.error) {
+      setIsBookmarked(false);
+    }
+  }, [isPostBookmarked.data, isPostBookmarked.error]);
 
   const likePostHandler = () => {
     setIsLiked((prevState) => !prevState);
@@ -108,11 +119,10 @@ const Post = ({ id }: { id: string }) => {
     if (post.data && post.data.id) {
       if (isLiked) {
         setLikes((prevState) => prevState - 1);
-        unlikePost.mutate({ postId: post.data.id });
       } else {
         setLikes((prevState) => prevState + 1);
-        likePost.mutate({ postId: post.data.id });
       }
+      likePost.mutate({ postId: post.data.id });
     }
   };
 

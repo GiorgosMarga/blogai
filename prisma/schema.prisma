@@ -11,24 +11,34 @@ datasource db {
 }
 
 model User {
-  id                      String    @id @default(uuid())
-  email                   String    @unique
+  id                      String            @id @default(uuid())
+  email                   String            @unique
   password                String
   fullName                String
-  createdAt               DateTime  @default(now())
-  updatedAt               DateTime  @default(now())
-  role                    Role      @default(USER)
-  isVerified              Boolean   @default(false)
-  posts                   Post[]    @relation(name: "creator")
-  verificationId          String    @default("")
-  verificationIdTimestamp DateTime  @default(now())
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @default(now())
+  role                    Role              @default(USER)
+  isVerified              Boolean           @default(false)
+  posts                   Post[]            @relation(name: "creator")
+  verificationId          String            @default("")
+  verificationIdTimestamp DateTime          @default(now())
   comments                Comment[]
   bookmarked              String[]
-  followers               Int       @default(0)
+  followers               Int               @default(0)
   likes                   Likes[]
+  BookmarkedPosts         BookmarkedPosts[]
 
   @@index([email])
   @@index([id])
+}
+
+model BookmarkedPosts {
+  userId String
+  postId String
+  user   User   @relation(fields: [userId], references: [id])
+  post   Post   @relation(fields: [postId], references: [id])
+
+  @@unique([userId, postId])
 }
 
 model Likes {
@@ -41,22 +51,23 @@ model Likes {
 }
 
 model Post {
-  id         String    @id @default(uuid())
-  title      String
-  subtitle   String    @default("")
-  content    String
-  user       User      @relation(fields: [userId], references: [id], name: "creator")
-  userId     String
+  id              String            @id @default(uuid())
+  title           String
+  subtitle        String            @default("")
+  content         String
+  user            User              @relation(fields: [userId], references: [id], name: "creator")
+  userId          String
   // likes      Int       @default(0)
-  cover      String?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @default(now())
-  category   Category
-  tags       String[]
-  isVisible  Boolean   @default(false)
-  isFeatured Boolean   @default(false)
-  comments   Comment[]
-  likes      Likes[]
+  cover           String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @default(now())
+  category        Category
+  tags            String[]
+  isVisible       Boolean           @default(false)
+  isFeatured      Boolean           @default(false)
+  comments        Comment[]
+  likes           Likes[]
+  BookmarkedPosts BookmarkedPosts[]
 
   @@index([id])
 }

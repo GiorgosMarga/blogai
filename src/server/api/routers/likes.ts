@@ -48,45 +48,37 @@ export const likesRouter = createTRPCRouter({
     .input(z.object({ postId: z.string().uuid() }))
     .mutation(async ({ input, ctx }) => {
       try {
-        await prisma.likes
-          .create({
-            data: {
+        const isPostLiked = await prisma.likes.findUnique({
+          where: {
+            userId_postId: {
               userId: ctx.user.id,
               postId: input.postId,
             },
-          })
-          .then()
-          .catch();
+          },
+        });
+
         await redisClient.del(input.postId);
-        return { msg: "Created" };
-      } catch (error) {
-        throw new DBConnectionError("DB_ERROR while liking the post");
-      }
-    }),
-  unlikePost: authenticatedProcedure
-    .input(
-      z.object({
-        postId: z.string().uuid(),
-      })
-    )
-    .mutation(async ({ ctx, input }) => {
-      try {
-        await prisma.likes
-          .delete({
+
+        if (isPostLiked) {
+          await prisma.likes.delete({
             where: {
               userId_postId: {
                 userId: ctx.user.id,
                 postId: input.postId,
               },
             },
-          })
-          .then()
-          .catch();
-        await redisClient.del(input.postId);
-
-        return { msg: "Deleted" };
+          });
+          return { like: false };
+        }
+        await prisma.likes.create({
+          data: {
+            userId: ctx.user.id,
+            postId: input.postId,
+          },
+        });
+        return { like: true };
       } catch (error) {
-        throw new DBConnectionError("DB_ERROR while unliking the post");
+        throw new DBConnectionError("DB_ERROR while liking the post");
       }
     }),
 });
