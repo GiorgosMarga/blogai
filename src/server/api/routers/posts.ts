@@ -9,7 +9,7 @@ import { Category, Post, Role, User } from "@prisma/client";
 import { BadRequestError, DBConnectionError } from "@giorgosmarga/errors";
 import { PostClass } from "~/utils/Post";
 import redisClient from "~/db/redisClient";
-import { CommentWithUser } from "~/pages/post/[id]";
+import type { CommentWithUser } from "~/pages/post/[id]";
 export const postsRouter = createTRPCRouter({
   getPosts: publicProcedure.input(z.any()).query(async () => {
     try {

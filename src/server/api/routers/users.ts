@@ -189,7 +189,7 @@ export const usersRouter = createTRPCRouter({
       const user = await UserClass.fetchUserById(ctx.user.id);
       return user.bookmarked.includes(input.postId);
     }),
-  whoIs: authenticatedProcedure.input(z.any()).query(async ({ ctx }) => {
+  whoIs: authenticatedProcedure.input(z.any()).query(({ ctx }) => {
     // let user: {id: string, bookmarked: string[]} | null
     // try {
     //   user = await prisma.user.findFirst({
