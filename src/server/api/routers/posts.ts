@@ -14,9 +14,7 @@ export const postsRouter = createTRPCRouter({
   getPosts: publicProcedure.input(z.any()).query(async () => {
     try {
       const posts = await prisma.post.findMany({
-        where: {
-          isVisible: false,
-        },
+        take: 5,
         include: {
           user: {
             select: {

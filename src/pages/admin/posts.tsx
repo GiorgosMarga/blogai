@@ -3,7 +3,7 @@ import { api } from "~/utils/api";
 import type { Post } from "@prisma/client";
 
 const Users = () => {
-  const posts = api.post.getPosts.useQuery();
+  const posts = api.post.getPosts.useQuery({});
   const deletedPost = api.post.deletePost.useMutation();
   const onDeleteHandler = async (post: Post) => {
     deletedPost.mutate({ postId: post.id });
