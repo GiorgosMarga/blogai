@@ -33,11 +33,10 @@ import type { inferAsyncReturnType } from "@trpc/server";
 export const createContext = (opts: CreateNextContextOptions) => {
   return {
     res: opts.res,
-    req: opts.req
+    req: opts.req,
   };
 };
-type Context = inferAsyncReturnType<typeof createContext>
-
+type Context = inferAsyncReturnType<typeof createContext>;
 
 /**
  * 2. INITIALIZATION
@@ -51,7 +50,7 @@ import superjson from "superjson";
 import { ZodError } from "zod";
 import prisma from "~/db/client";
 import { env } from "~/env.mjs";
-import jwt from 'jsonwebtoken'
+import jwt from "jsonwebtoken";
 export const t = initTRPC.context<Context>().create({
   transformer: superjson,
   errorFormatter({ shape, error }) {
@@ -64,7 +63,6 @@ export const t = initTRPC.context<Context>().create({
       },
     };
   },
-  
 });
 
 /**
@@ -89,47 +87,46 @@ export const createTRPCRouter = t.router;
  * are logged in.
  */
 export const publicProcedure = t.procedure;
-interface UserJWT{
-  email:string;
+interface UserJWT {
+  email: string;
   id: string;
-  role: 'ADMIN' | 'USER'
+  role: "ADMIN" | "USER";
 }
 
-export const isAuthed = t.middleware(async  ({next , ctx}) => {
-  if(!ctx?.req?.cookies?.user){
+export const isAuthed = t.middleware(async ({ next, ctx }) => {
+  if (!ctx?.req?.cookies?.user) {
     throw new TRPCError({
-      code: 'UNAUTHORIZED'
-    })
+      code: "UNAUTHORIZED",
+    });
   }
   const token = ctx.req.cookies.user;
-  let user: UserJWT
-  try{
-    user = jwt.verify(token, env.JWT_KEY) as UserJWT
-  }catch(err){
+  let user: UserJWT;
+  try {
+    user = jwt.verify(token, env.JWT_KEY) as UserJWT;
+  } catch (err) {
     throw new TRPCError({
-      code: 'UNAUTHORIZED'
-    })
+      code: "UNAUTHORIZED",
+    });
   }
-  const realUser = await prisma.user.findUnique({where: {
-    email: user.email
-  }})
-  if(!realUser){
+  const realUser = await prisma.user.findUnique({
+    where: {
+      email: user.email,
+    },
+  });
+  if (!realUser) {
     throw new TRPCError({
-      code: "UNAUTHORIZED"
-    })
+      code: "UNAUTHORIZED",
+    });
   }
   return next({
     ctx: {
       user: {
         email: realUser.email,
         id: realUser.id,
-        role: realUser.role
-      }
-    }
-  })
-})
+        role: realUser.role,
+      },
+    },
+  });
+});
 
-
-
-export const authenticatedProcedure = t.procedure.use(isAuthed)
-
+export const authenticatedProcedure = t.procedure.use(isAuthed);

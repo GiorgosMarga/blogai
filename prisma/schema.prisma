@@ -39,6 +39,7 @@ model BookmarkedPosts {
   post   Post   @relation(fields: [postId], references: [id])
 
   @@unique([userId, postId])
+  @@index([userId, postId])
 }
 
 model Likes {
@@ -48,6 +49,7 @@ model Likes {
   post   Post   @relation(references: [id], fields: [postId])
 
   @@unique([userId, postId])
+  @@index([userId, postId])
 }
 
 model Post {
@@ -57,7 +59,6 @@ model Post {
   content         String
   user            User              @relation(fields: [userId], references: [id], name: "creator")
   userId          String
-  // likes      Int       @default(0)
   cover           String?
   createdAt       DateTime          @default(now())
   updatedAt       DateTime          @default(now())
@@ -81,6 +82,8 @@ model Comment {
   createdAt DateTime @default(now())
   updatedAt DateTime @default(now())
   content   String
+
+  @@index([id])
 }
 
 enum Role {

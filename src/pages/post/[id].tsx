@@ -21,7 +21,7 @@ import CreateComment from "~/components/CreateComment";
 import Link from "next/link";
 import type { Comment } from "@prisma/client";
 import LoadingPostPage from "~/components/LoadingPostPage";
-import { error } from "console";
+import { useRouter } from "next/navigation";
 export interface CommentWithUser extends Comment {
   creator: {
     fullName: string;
@@ -77,6 +77,8 @@ const Post = ({ id }: { id: string }) => {
   const [content, setContent] = useState("");
   const [comments, setComments] = useState<CommentWithUser[]>([]);
 
+  const router = useRouter();
+
   // initialize likes from db
   useEffect(() => {
     if (post.data && !post.isLoading) {
@@ -114,6 +116,11 @@ const Post = ({ id }: { id: string }) => {
   }, [isPostBookmarked.data, isPostBookmarked.error]);
 
   const likePostHandler = () => {
+    if (!userId) {
+      router.push("/auth");
+      return;
+    }
+    console.log("Userid:", userId);
     setIsLiked((prevState) => !prevState);
 
     if (post.data && post.data.id) {
