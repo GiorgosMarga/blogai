@@ -71,6 +71,7 @@ model Post {
   BookmarkedPosts BookmarkedPosts[]
 
   @@index([id])
+  @@index([isVisible])
 }
 
 model Comment {

@@ -58,7 +58,6 @@ export class UserClass {
     try {
       createdUser = await prisma.user.create({ data: createUserInput });
     } catch (error) {
-      console.log(error);
       throw new DBConnectionError("DB_ERROR while creating the user.");
     }
     return createdUser;

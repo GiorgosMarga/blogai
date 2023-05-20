@@ -11,11 +11,18 @@ import { PostClass } from "~/utils/Post";
 import redisClient from "~/db/redisClient";
 import { CommentWithUser } from "~/pages/post/[id]";
 export const postsRouter = createTRPCRouter({
-  getPosts: publicProcedure.query(async () => {
+  getPosts: publicProcedure.input(z.any()).query(async () => {
     try {
       const posts = await prisma.post.findMany({
+        where: {
+          isVisible: false,
+        },
         include: {
-          user: true,
+          user: {
+            select: {
+              fullName: true,
+            },
+          },
         },
       });
       return posts;

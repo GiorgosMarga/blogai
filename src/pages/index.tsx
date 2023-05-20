@@ -14,7 +14,10 @@ const Home: NextPage = () => {
     {},
     { retry: false, staleTime: Infinity, refetchOnMount: "always" }
   );
-  const posts = api.post.getPosts.useQuery();
+  const posts = api.post.getPosts.useQuery(
+    {},
+    { staleTime: 500000, refetchOnMount: "always" }
+  );
   const setUserId = useSetRecoilState(userAtom);
 
   useEffect(() => {
@@ -50,7 +53,7 @@ const Home: NextPage = () => {
                       createdAt={post.updatedAt}
                       creator={post.user.fullName}
                       tag={post.tags[0]}
-                      creatorId={post.user.id}
+                      creatorId={post.userId}
                     />
                   );
                 })

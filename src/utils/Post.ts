@@ -29,7 +29,6 @@ export class PostClass {
       }
       return post;
     } catch (error) {
-      console.log(error);
       throw new DBConnectionError("DB_ERROR while fetching post by id.");
     }
   }

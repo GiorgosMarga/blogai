@@ -120,7 +120,6 @@ const Post = ({ id }: { id: string }) => {
       router.push("/auth");
       return;
     }
-    console.log("Userid:", userId);
     setIsLiked((prevState) => !prevState);
 
     if (post.data && post.data.id) {
