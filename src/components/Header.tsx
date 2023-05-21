@@ -22,6 +22,13 @@ const Header = () => {
   };
   useEffect(() => {
     if (document.cookie) {
+      const cookies = document.cookie.split(";");
+      for (const cookie of cookies) {
+        if (cookie.split("=")[0]?.trim() === "user") {
+          setIsLoggedIn(true);
+          return;
+        }
+      }
       if (document.cookie.split("=")[0] === "user") {
         setIsLoggedIn(true);
       }
