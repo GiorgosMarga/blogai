@@ -66,7 +66,7 @@ const Home: NextPage = () => {
               )}
             </div>
           </div>
-          <div className="hidden  flex-col p-10 md:flex md:w-[50%]">
+          <div className="hidden  flex-col p-10 lg:flex lg:w-[50%]">
             <h2 className="text-lg font-semibold text-white">
               Monthly Best Articles
             </h2>
