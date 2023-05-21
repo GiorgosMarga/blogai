@@ -50,7 +50,7 @@ export const postsRouter = createTRPCRouter({
   createPost: authenticatedProcedure
     .input(
       z.object({
-        title: z.string().min(2).max(50),
+        title: z.string().min(2).max(200),
         content: z.string().min(200),
         category: z.string(),
         tags: z.string().array().max(5),
