@@ -56,8 +56,11 @@ export const likesRouter = createTRPCRouter({
             },
           },
         });
-
-        await redisClient.del(input.postId);
+        try {
+          await redisClient.del(input.postId);
+        } catch (err) {
+          console.log("no redis");
+        }
 
         if (isPostLiked) {
           await prisma.likes.delete({

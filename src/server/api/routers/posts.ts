@@ -35,16 +35,26 @@ export const postsRouter = createTRPCRouter({
       })
     )
     .query(async ({ input: { id } }) => {
-      const cachedPost = await redisClient.get(id);
-      if (cachedPost) {
-        return JSON.parse(cachedPost) as Post & {
-          user: User;
-          comments: CommentWithUser[];
-          _count: { likes: number };
-        };
+      try {
+        const cachedPost = await redisClient.get(id);
+
+        if (cachedPost) {
+          return JSON.parse(cachedPost) as Post & {
+            user: User;
+            comments: CommentWithUser[];
+            _count: { likes: number };
+          };
+        }
+      } catch (err) {
+        console.log("no redis");
       }
+
       const post = await PostClass.getPostById(id);
-      await redisClient.set(post.id, JSON.stringify(post), { EX: 60 * 60 });
+      try {
+        await redisClient.set(post.id, JSON.stringify(post), { EX: 60 * 60 });
+      } catch (err) {
+        console.log(err);
+      }
       return post;
     }),
   createPost: authenticatedProcedure

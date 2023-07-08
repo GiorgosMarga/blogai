@@ -15,8 +15,6 @@ import { UserClass } from "~/utils/User";
 import jsonwebtoken from "jsonwebtoken";
 import { env } from "~/env.mjs";
 import { JWT } from "~/utils/JWT";
-import redisClient from "~/db/redisClient";
-import { TRPCError } from "@trpc/server";
 
 export const usersRouter = createTRPCRouter({
   getUser: publicProcedure
@@ -39,6 +37,8 @@ export const usersRouter = createTRPCRouter({
     return users;
   }),
   logoutUser: authenticatedProcedure.mutation(({ ctx }) => {
+    console.log("CREATED COOKIE");
+
     ctx.res.setHeader(
       "Set-Cookie",
       `user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;`
@@ -59,6 +59,7 @@ export const usersRouter = createTRPCRouter({
         { email: user.email, id: user.id, role: user.role },
         env.JWT_KEY
       );
+      console.log("CREATED COOKIE");
 
       ctx.res.setHeader("Set-Cookie", `user=${jwt}; path=/;`);
       return user;
@@ -94,6 +95,7 @@ export const usersRouter = createTRPCRouter({
         id: user.id,
         role: user.role,
       });
+      console.log("CREATED COOKIE");
       ctx.res.setHeader("Set-Cookie", `user=${jwt}; path=/;`);
       return user;
     }),
