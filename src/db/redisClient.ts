@@ -1,7 +1,7 @@
 import { createClient } from "redis";
 import { env } from "~/env.mjs";
 
-let redisClient = createClient({
+const redisClient = createClient({
   password: env.REDIS_PASSWORD,
   socket: {
     host: env.REDIS_URL,
@@ -13,10 +13,8 @@ const start = async () => {
   await redisClient.connect();
 };
 
-start()
-  .catch((err) => {
-    console.log(err);
-  })
-  .then(() => {});
+start().catch((err) => {
+  console.log(err);
+});
 
 export default redisClient;
