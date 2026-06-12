@@ -210,7 +210,7 @@ export const usersRouter = createTRPCRouter({
     //   throw new TRPCError({code: "NOT_FOUND", message: "User does not exist"})
     // }
     return {
-      id: ctx.user.id as string,
+      id: ctx.user.id,
     };
   }),
 });
