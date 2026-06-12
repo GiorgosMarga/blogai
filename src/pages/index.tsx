@@ -23,7 +23,7 @@ const Home: NextPage = () => {
   useEffect(() => {
     if (userId.data) setUserId(userId.data.id);
     if (userId.error) setUserId("");
-  }, [userId]);
+  }, [userId.data, userId.error, setUserId]);
 
   return (
     <>

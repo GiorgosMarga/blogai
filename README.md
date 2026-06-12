@@ -1,24 +1,93 @@
 # Blogai
 
-This is a [T3 Stack](https://create.t3.gg/) project bootstrapped with `create-t3-app`.
+Blogai is a learning-focused blog platform built with the T3 Stack. It combines a modern Next.js frontend, type-safe tRPC APIs, Prisma ORM, and a PostgreSQL-compatible database workflow
+to deliver a full-stack blogging experience.
 
-If you are not familiar with the different technologies used in this project, please refer to the respective docs.
+The project includes user authentication, post browsing, markdown-based content rendering, comments, likes, bookmarks, and admin-oriented user management. It was built primarily as a
+practical project to explore the T3 ecosystem and common full-stack patterns in TypeScript.
 
-- [Next.js](https://nextjs.org)
-- [Prisma](https://prisma.io)
-- [Tailwind CSS](https://tailwindcss.com)
-- [tRPC](https://trpc.io)
+## Features
 
-## Learn More
+- Browse blog posts from a curated feed
+- View individual posts with markdown rendering
+- Create and edit posts with a markdown editor
+- Register, log in, and verify accounts
+- Like and bookmark posts
+- Comment on posts
+- Admin tools for user management
+- Type-safe client/server communication with tRPC
 
-To learn more about the [T3 Stack](https://create.t3.gg/), take a look at the following resources:
+## Tech Stack
 
-- [Documentation](https://create.t3.gg/)
-- [Learn the T3 Stack](https://create.t3.gg/en/faq#what-learning-resources-are-currently-available) — Check out these awesome tutorials
+- **Next.js** - React framework for routing, server-side rendering, and app structure
+- **TypeScript** - Static typing across the frontend and backend
+- **tRPC** - End-to-end type-safe APIs
+- **Prisma** - ORM for database access and schema management
+- **Tailwind CSS** - Utility-first styling
+- **Recoil** - Client-side state management
+- **React Query** - Data fetching and caching through tRPC
+- **React Markdown** - Markdown rendering for post content
+- **SuperJSON** - Serialization for complex data types
+- **Zod** - Runtime validation and schema parsing
+- **CockroachDB** - Database provider configured through Prisma
+- **Redis** - Used for caching or session-related workflows
+- **JWT** - Authentication token handling
+- **bcrypt** - Password hashing
+- **Nodemailer** - Email delivery for verification flows
 
-You can check out the [create-t3-app GitHub repository](https://github.com/t3-oss/create-t3-app) — your feedback and contributions are welcome!
+## Project Structure
 
-## About
- - Simple blog post 
- - No post belongs to me, they are all posts found on medium
- - Project just for learning t3 and trpc purposes
+- `src/pages` - Next.js pages and API routes
+- `src/server/api` - tRPC routers, procedures, and context
+- `src/components` - Reusable UI components
+- `src/utils` - Shared helpers and domain utilities
+- `src/db` - Database client setup
+- `prisma/schema.prisma` - Database schema
+
+## Getting Started
+
+### Prerequisites
+
+- Node.js 18+
+- A configured database
+- Redis credentials
+- Environment variables set in `.env`
+
+### Environment Variables
+
+This project expects the following variables to be available:
+
+- `DATABASE_URL`
+- `JWT_KEY`
+- `REDIS_URL`
+- `REDIS_PASSWORD`
+- `REDIS_PORT`
+
+### Install Dependencies
+
+```bash
+npm install
+
+### Run the Development Server
+
+npm run dev
+
+### Build for Production
+
+npm run build
+
+### Start the Production Server
+
+npm start
+
+## Notes
+
+This application was created as a personal learning project to explore:
+
+- the T3 Stack
+- type-safe API patterns with tRPC
+- Prisma database modeling
+- markdown-based blog workflows
+- authentication and user management in a full-stack TypeScript app
+
+```
