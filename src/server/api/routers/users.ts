@@ -37,8 +37,6 @@ export const usersRouter = createTRPCRouter({
     return users;
   }),
   logoutUser: authenticatedProcedure.mutation(({ ctx }) => {
-    console.log("CREATED COOKIE");
-
     ctx.res.setHeader(
       "Set-Cookie",
       `user=;expires=Thu, 01 Jan 1970 00:00:01 GMT;path=/;`
