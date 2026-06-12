@@ -1,5 +1,4 @@
 import { createClient } from "redis";
-import { env } from "~/env.mjs";
 
 const redisClient = createClient({
     username: 'default',
