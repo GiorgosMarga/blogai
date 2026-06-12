@@ -189,24 +189,7 @@ export const usersRouter = createTRPCRouter({
       const user = await UserClass.fetchUserById(ctx.user.id);
       return user.bookmarked.includes(input.postId);
     }),
-  whoIs: authenticatedProcedure.input(z.any()).query(({ ctx }): {id: string}=> {
-    // let user: {id: string, bookmarked: string[]} | null
-    // try {
-    //   user = await prisma.user.findFirst({
-    //     where: {
-    //       id: ctx.user.id
-    //     },
-    //     select: {
-    //       id: true,
-    //       bookmarked: true
-    //     }
-    //   })
-    // } catch (error) {
-    //   throw new TRPCError({code: "INTERNAL_SERVER_ERROR", message: "DB_ERROR while fetching user"})
-    // }
-    // if(!user){
-    //   throw new TRPCError({code: "NOT_FOUND", message: "User does not exist"})
-    // }
+  whoIs: publicProcedure.input(z.any()).query(({ ctx }): {id: string}=> {
     return {
       id: ctx.user.id,
     };

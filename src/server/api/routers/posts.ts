@@ -115,7 +115,7 @@ export const postsRouter = createTRPCRouter({
       }
       throw new BadRequestError("You are not authorized to delete this post");
     }),
-  getUserPosts: authenticatedProcedure
+  getUserPosts: publicProcedure
     .input(
       z.object({
         userId: z.string().uuid(),
